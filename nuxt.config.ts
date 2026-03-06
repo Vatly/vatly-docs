@@ -1,56 +1,11 @@
 export default defineNuxtConfig({
   extends: ['docus'],
 
-  modules: ['@nuxtjs/sitemap'],
+  // Static sitemap.xml in public/ folder - no module needed
 
   site: {
     name: 'Vatly Docs',
     url: 'https://docs.vatly.com',
-  },
-
-  sitemap: {
-    siteUrl: 'https://docs.vatly.com',
-    sources: [
-      '/api/__sitemap__/urls'
-    ],
-    urls: [
-      '/',
-      '/introduction',
-      '/guides/quickstart',
-      '/guides/sdks',
-      '/guides/authentication',
-      '/guides/pagination',
-      '/guides/errors',
-      '/guides/webhooks',
-      '/guides/idempotency',
-      '/api-reference/customers',
-      '/api-reference/checkouts',
-      '/api-reference/subscriptions',
-      '/api-reference/subscription-plans',
-      '/api-reference/orders',
-      '/api-reference/refunds',
-      '/api-reference/global-refunds',
-      '/api-reference/chargebacks',
-      '/api-reference/one-off-products',
-      '/packages',
-      '/packages/php/readme',
-      '/packages/php/customers',
-      '/packages/php/checkouts',
-      '/packages/php/subscriptions',
-      '/packages/php/subscriptionplans',
-      '/packages/php/orders',
-      '/packages/php/refunds',
-      '/packages/php/oneoffproducts',
-      '/packages/php/chargebacks',
-      '/packages/php/webhooks',
-      '/packages/laravel/readme',
-      '/packages/laravel/customers',
-      '/packages/laravel/checkouts',
-      '/packages/laravel/subscriptions',
-      '/packages/laravel/orders',
-      '/packages/laravel/webhooks',
-      '/integrations',
-    ],
   },
 
   app: {

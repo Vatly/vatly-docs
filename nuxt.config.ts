@@ -1,9 +1,16 @@
 export default defineNuxtConfig({
   extends: ['docus'],
 
+  modules: ['@nuxtjs/sitemap'],
+
   site: {
     name: 'Vatly Docs',
     url: 'https://docs.vatly.com',
+  },
+
+  sitemap: {
+    siteUrl: 'https://docs.vatly.com',
+    strictNuxtContentPaths: true,
   },
 
   app: {

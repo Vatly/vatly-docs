@@ -2,7 +2,7 @@
 
 > Connect Vatly with third-party platforms and services.
 
-We don't have any integrations available yet. Want us to add one? Let us know:
+We don't have any integrations available yet. Want us to add or want us to list yours as a community contribution? Let us know:
 
 - [Join our Discord](https://discord.gg/vatly)
 - [Vote on our roadmap](https://roadmap.vatly.com)

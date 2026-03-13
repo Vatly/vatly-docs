@@ -132,26 +132,6 @@ VATLY_REDIRECT_URL_CANCELED=https://your-app.com/checkout/canceled
   <tr>
     <td>
       <code>
-        testmode
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        VATLY_TESTMODE
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        false
-      </code>
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
         billable_model
       </code>
     </td>
@@ -206,6 +186,8 @@ VATLY_REDIRECT_URL_CANCELED=https://your-app.com/checkout/canceled
   </tr>
 </tbody>
 </table>
+
+> **Note:** Testmode is automatically determined from your API key prefix. Keys starting with `test_` use testmode; keys starting with `live_` use production mode. No configuration needed.
 
 ## Database setup
 

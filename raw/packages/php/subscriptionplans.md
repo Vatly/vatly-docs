@@ -1,5 +1,7 @@
 # Subscription Plans
 
+> Vatly PHP SDK - Subscription Plans
+
 Subscription plans define recurring billing products. Create and manage plans in the Vatly dashboard, then use the API to retrieve them.
 
 ## The Subscription Plan Resource

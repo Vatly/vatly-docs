@@ -1,5 +1,7 @@
 # Customers
 
+> Vatly Laravel Package - Customers
+
 Every billable model can be linked to a Vatly customer. Customers are created automatically by Vatly during checkout and synced to your application via webhooks. You can also create customers explicitly if needed.
 
 ## Creating a customer

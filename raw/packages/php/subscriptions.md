@@ -1,5 +1,7 @@
 # Subscriptions
 
+> Vatly PHP SDK - Subscriptions
+
 Subscriptions are created automatically when a customer completes a checkout for a subscription plan. You can then manage the subscription lifecycle through the API.
 
 ## The Subscription Resource

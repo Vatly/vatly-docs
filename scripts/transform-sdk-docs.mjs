@@ -47,7 +47,8 @@ for (const file of files) {
   // Check if frontmatter already exists
   const hasFrontmatter = content.startsWith('---')
 
-  let transformed = content
+  // Strip the first H1 heading to avoid duplicate with frontmatter title
+  let transformed = content.replace(/^#\s+.+\n+/, '')
 
   // Rewrite internal links to point to SDK pages
   const linkMap = {

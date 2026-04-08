@@ -6,7 +6,11 @@ export default defineAppConfig({
   },
   header: {
     title: 'Vatly',
-    logo: '/vatly-logo.svg',
+    logo: {
+      light: '/vatly-logo-blue.svg',
+      dark: '/vatly-logo-white.svg',
+      alt: 'Vatly',
+    },
   },
   ui: {
     colors: {

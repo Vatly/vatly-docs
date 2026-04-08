@@ -44,5 +44,5 @@ jobs:
       - name: Check internal links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress --offline '.output/public/**/*.html'
+          args: --no-progress --offline --root-dir .output/public '.output/public/**/*.html'
           fail: true

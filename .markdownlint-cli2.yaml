@@ -1,0 +1,19 @@
+config:
+  MD003: false
+  MD007: false
+  MD012: false
+  MD013: false
+  MD018: false
+  MD022: false
+  MD023: false
+  MD024:
+    siblings_only: true
+  MD026: false
+  MD032: false
+  MD033: false
+  MD034: false
+  MD042: false
+  MD060: false
+
+ignores:
+  - "content/3.packages/**"

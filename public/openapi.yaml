@@ -25,7 +25,7 @@ info:
 
     ## Pagination
 
-    List endpoints use cursor-based pagination with the following parameters:
+    List endpoints use cursor-based pagination with the following query parameters:
 
     | Parameter | Type | Description |
     |-----------|------|-------------|
@@ -34,6 +34,20 @@ info:
     | `endingBefore` | string | Cursor ID to fetch results before |
 
     `startingAfter` and `endingBefore` are mutually exclusive.
+
+    All list responses are wrapped in a pagination envelope:
+
+    ```json
+    {
+      "data": [ ... ],
+      "count": 2,
+      "links": {
+        "self": { "href": "https://api.vatly.com/v1/orders", "type": "application/json" },
+        "next": { "href": "https://api.vatly.com/v1/orders?startingAfter=order_abc", "type": "application/json" },
+        "prev": null
+      }
+    }
+    ```
 
     ## Money Format
 
@@ -108,6 +122,10 @@ tags:
     description: |
       Manage customer subscriptions.
       Update plans, quantities, billing details, or cancel subscriptions.
+  - name: Test Helpers
+    description: |
+      Sandbox-only endpoints for simulating billing events.
+      These endpoints require a `test_` prefixed API token.
 paths:
   /checkouts:
     get:
@@ -128,29 +146,50 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Checkout'
-              example:
-                - id: chk_abc123
-                  resource: checkout
-                  merchantId: mer_xyz789
-                  orderId: null
-                  testmode: false
-                  redirectUrlSuccess: https://example.com/success
-                  redirectUrlCanceled: https://example.com/canceled
-                  metadata: {}
-                  status: created
-                  expiresAt: '2024-01-16T10:30:00Z'
-                  createdAt: '2024-01-15T10:30:00Z'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Checkout'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
                   links:
-                    checkoutUrl:
-                      href: https://checkout.vatly.com/chk_abc123
-                      type: text/html
-                    self:
-                      href: https://api.vatly.com/v1/checkouts/chk_abc123
-                      type: application/json
-                    order: null
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: checkout_QdEpFhdSrG4Y3DnfsdqsH
+                    resource: checkout
+                    merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                    orderId: null
+                    testmode: false
+                    redirectUrlSuccess: https://example.com/success
+                    redirectUrlCanceled: https://example.com/canceled
+                    metadata: {}
+                    status: created
+                    expiresAt: '2024-01-16T10:30:00Z'
+                    createdAt: '2024-01-15T10:30:00Z'
+                    links:
+                      checkoutUrl:
+                        href: https://checkout.vatly.com/checkout_QdEpFhdSrG4Y3DnfsdqsH
+                        type: text/html
+                      self:
+                        href: https://api.vatly.com/v1/checkouts/checkout_QdEpFhdSrG4Y3DnfsdqsH
+                        type: application/json
+                      order: null
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/checkouts
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -190,16 +229,16 @@ paths:
                   redirectUrlSuccess: https://example.com/success
                   redirectUrlCanceled: https://example.com/canceled
                   products:
-                    - id: prod_abc123
+                    - id: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
                       quantity: 1
               subscriptionWithTrial:
                 summary: Subscription plan with trial
                 value:
                   redirectUrlSuccess: https://example.com/success
                   redirectUrlCanceled: https://example.com/canceled
-                  customerId: cus_existing123
+                  customerId: customer_Fp2kQrSvWm8NjLhYbUcP
                   products:
-                    - id: plan_monthly
+                    - id: subscription_plan_Bm7xNvPwKr3YjTgHcZaE
                       trialDays: 14
               customPrice:
                 summary: Product with custom price
@@ -207,7 +246,7 @@ paths:
                   redirectUrlSuccess: https://example.com/success
                   redirectUrlCanceled: https://example.com/canceled
                   products:
-                    - id: prod_abc123
+                    - id: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
                       quantity: 2
                       price:
                         value: '49.99'
@@ -222,9 +261,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Checkout'
               example:
-                id: chk_new123
+                id: checkout_Bm7xNvPwKr3YjTgHcZaE
                 resource: checkout
-                merchantId: mer_xyz789
+                merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
                 orderId: null
                 testmode: false
                 redirectUrlSuccess: https://example.com/success
@@ -236,10 +275,10 @@ paths:
                 createdAt: '2024-01-15T10:30:00Z'
                 links:
                   checkoutUrl:
-                    href: https://checkout.vatly.com/chk_new123
+                    href: https://checkout.vatly.com/checkout_Bm7xNvPwKr3YjTgHcZaE
                     type: text/html
                   self:
-                    href: https://api.vatly.com/v1/checkouts/chk_new123
+                    href: https://api.vatly.com/v1/checkouts/checkout_Bm7xNvPwKr3YjTgHcZaE
                     type: application/json
                   order: null
         '401':
@@ -266,6 +305,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Checkout'
+              example:
+                id: checkout_QdEpFhdSrG4Y3DnfsdqsH
+                resource: checkout
+                merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                orderId: order_Jk4pQrSvWm8NjLhYbUcP
+                testmode: false
+                redirectUrlSuccess: https://example.com/success
+                redirectUrlCanceled: https://example.com/canceled
+                metadata:
+                  campaign: summer-sale
+                status: paid
+                expiresAt: '2024-01-16T10:30:00Z'
+                createdAt: '2024-01-15T10:30:00Z'
+                links:
+                  checkoutUrl:
+                    href: https://checkout.vatly.com/checkout_QdEpFhdSrG4Y3DnfsdqsH
+                    type: text/html
+                  self:
+                    href: https://api.vatly.com/v1/checkouts/checkout_QdEpFhdSrG4Y3DnfsdqsH
+                    type: application/json
+                  order:
+                    href: https://api.vatly.com/v1/orders/order_Jk4pQrSvWm8NjLhYbUcP
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -291,9 +353,52 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Customer'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 2
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: customer_7kBmRtPvXw2NjLhYcZaE
+                    resource: customer
+                    testmode: false
+                    email: john.doe@example.com
+                    createdAt: '2024-01-15T10:30:00Z'
+                    metadata:
+                      userId: user_Qp8kNvBxKw7RjTgYcZaE
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE
+                        type: application/json
+                  - id: customer_Lp3mNvBxKw7RjTgYcZaE
+                    resource: customer
+                    testmode: false
+                    email: jane.smith@acme.com
+                    createdAt: '2024-01-10T08:15:00Z'
+                    metadata: {}
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
+                        type: application/json
+                count: 2
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/customers
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -323,7 +428,7 @@ paths:
             example:
               email: customer@example.com
               metadata:
-                userId: user_12345
+                userId: user_Qp8kNvBxKw7RjTgYcZaE
       responses:
         '201':
           description: Customer created successfully
@@ -332,16 +437,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Customer'
               example:
-                id: cus_abc123
+                id: customer_7kBmRtPvXw2NjLhYcZaE
                 resource: customer
                 testmode: false
                 email: customer@example.com
                 createdAt: '2024-01-15T10:30:00Z'
                 metadata:
-                  userId: user_12345
+                  userId: user_Qp8kNvBxKw7RjTgYcZaE
                 links:
                   self:
-                    href: https://api.vatly.com/v1/customers/cus_abc123
+                    href: https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE
                     type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -365,6 +470,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Customer'
+              example:
+                id: customer_7kBmRtPvXw2NjLhYcZaE
+                resource: customer
+                testmode: false
+                email: john.doe@example.com
+                createdAt: '2024-01-15T10:30:00Z'
+                metadata:
+                  userId: user_Qp8kNvBxKw7RjTgYcZaE
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -392,9 +509,65 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Subscription'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subscription'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: subscription_Lp3mNvBxKw7RjTgYcZaE
+                    resource: subscription
+                    customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                    testmode: false
+                    name: Pro Monthly
+                    description: Full access to all Pro features
+                    billingAddress:
+                      fullName: John Doe
+                      companyName: Acme Corp
+                      streetAndNumber: 123 Main Street
+                      city: Berlin
+                      postalCode: '10115'
+                      country: DE
+                    basePrice:
+                      value: '29.00'
+                      currency: EUR
+                    quantity: 1
+                    interval: month
+                    intervalCount: 1
+                    status: active
+                    startedAt: '2024-01-15T10:30:00Z'
+                    endedAt: null
+                    cancelledAt: null
+                    renewedAt: '2024-02-15T10:30:00Z'
+                    renewedUntil: '2024-03-15T10:30:00Z'
+                    nextRenewalAt: '2024-03-15T10:30:00Z'
+                    trialUntil: null
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE
+                        type: application/json
+                      customer:
+                        href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
+                        type: application/json
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE/subscriptions
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -423,6 +596,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Subscription'
+              example:
+                id: subscription_Lp3mNvBxKw7RjTgYcZaE
+                resource: subscription
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                testmode: false
+                name: Pro Monthly
+                description: Full access to all Pro features
+                billingAddress:
+                  fullName: John Doe
+                  companyName: Acme Corp
+                  streetAndNumber: 123 Main Street
+                  city: Berlin
+                  postalCode: '10115'
+                  country: DE
+                basePrice:
+                  value: '29.00'
+                  currency: EUR
+                quantity: 1
+                interval: month
+                intervalCount: 1
+                status: active
+                startedAt: '2024-01-15T10:30:00Z'
+                endedAt: null
+                cancelledAt: null
+                renewedAt: '2024-02-15T10:30:00Z'
+                renewedUntil: '2024-03-15T10:30:00Z'
+                nextRenewalAt: '2024-03-15T10:30:00Z'
+                trialUntil: null
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
+                  customer:
+                    href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -437,7 +645,7 @@ paths:
         Returns a paginated list of one-off products for the authenticated merchant.
         Results are filtered by the testmode determined from the API token.
 
-        Only products with `approved` status can be used in checkouts.
+        Only products with `active` status can be used in checkouts.
       tags:
         - One-Off Products
       parameters:
@@ -450,24 +658,45 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/OneOffProduct'
-              example:
-                - id: prod_abc123
-                  resource: one_off_product
-                  testmode: false
-                  name: Premium License
-                  description: Lifetime access to all premium features
-                  basePrice:
-                    value: '299.00'
-                    currency: EUR
-                  status: approved
-                  createdAt: '2024-01-15T10:30:00Z'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OneOffProduct'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
                   links:
-                    self:
-                      href: https://api.vatly.com/v1/one-off-products/prod_abc123
-                      type: application/json
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
+                    resource: one_off_product
+                    testmode: false
+                    name: Premium License
+                    description: Lifetime access to all premium features
+                    basePrice:
+                      value: '299.00'
+                      currency: EUR
+                    status: active
+                    createdAt: '2024-01-15T10:30:00Z'
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/one-off-products/one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
+                        type: application/json
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/one-off-products
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -490,6 +719,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OneOffProduct'
+              example:
+                id: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
+                resource: one_off_product
+                testmode: false
+                name: Premium License
+                description: Lifetime access to all premium features
+                basePrice:
+                  value: '299.00'
+                  currency: EUR
+                status: active
+                createdAt: '2024-01-15T10:30:00Z'
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/one-off-products/one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -504,7 +748,7 @@ paths:
         Returns a paginated list of subscription plans for the authenticated merchant.
         Results are filtered by the testmode determined from the API token.
 
-        Only plans with `approved` status can be used in checkouts.
+        Only plans with `active` status can be used in checkouts.
       tags:
         - Subscription Plans
       parameters:
@@ -517,42 +761,63 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SubscriptionPlan'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubscriptionPlan'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 2
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
               example:
-                - id: plan_monthly
-                  resource: subscription_plan
-                  testmode: false
-                  name: Pro Monthly
-                  description: Full access to all Pro features, billed monthly
-                  basePrice:
-                    value: '29.00'
-                    currency: EUR
-                  interval: month
-                  intervalCount: 1
-                  status: approved
-                  createdAt: '2024-01-15T10:30:00Z'
-                  links:
-                    self:
-                      href: https://api.vatly.com/v1/subscription-plans/plan_monthly
-                      type: application/json
-                - id: plan_yearly
-                  resource: subscription_plan
-                  testmode: false
-                  name: Pro Yearly
-                  description: Full access to all Pro features, billed yearly
-                  basePrice:
-                    value: '290.00'
-                    currency: EUR
-                  interval: year
-                  intervalCount: 1
-                  status: approved
-                  createdAt: '2024-01-15T10:30:00Z'
-                  links:
-                    self:
-                      href: https://api.vatly.com/v1/subscription-plans/plan_yearly
-                      type: application/json
+                data:
+                  - id: subscription_plan_Bm7xNvPwKr3YjTgHcZaE
+                    resource: subscription_plan
+                    testmode: false
+                    name: Pro Monthly
+                    description: Full access to all Pro features, billed monthly
+                    basePrice:
+                      value: '29.00'
+                      currency: EUR
+                    interval: month
+                    intervalCount: 1
+                    status: active
+                    createdAt: '2024-01-15T10:30:00Z'
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7xNvPwKr3YjTgHcZaE
+                        type: application/json
+                  - id: subscription_plan_Wt5mNvBxKw7YcZaEjLhR
+                    resource: subscription_plan
+                    testmode: false
+                    name: Pro Yearly
+                    description: Full access to all Pro features, billed yearly
+                    basePrice:
+                      value: '290.00'
+                      currency: EUR
+                    interval: year
+                    intervalCount: 1
+                    status: active
+                    createdAt: '2024-01-15T10:30:00Z'
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/subscription-plans/subscription_plan_Wt5mNvBxKw7YcZaEjLhR
+                        type: application/json
+                count: 2
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/subscription-plans
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -575,6 +840,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SubscriptionPlan'
+              example:
+                id: subscription_plan_Bm7xNvPwKr3YjTgHcZaE
+                resource: subscription_plan
+                testmode: false
+                name: Pro Monthly
+                description: Full access to all Pro features, billed monthly
+                basePrice:
+                  value: '29.00'
+                  currency: EUR
+                interval: month
+                intervalCount: 1
+                status: active
+                createdAt: '2024-01-15T10:30:00Z'
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7xNvPwKr3YjTgHcZaE
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -600,9 +882,101 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Order'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: order_Hn5xWqVfKm8RjTgYbUcP
+                    resource: order
+                    merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                    customerId: customer_Xk9pQrSvWm4NjLhYbUcP
+                    testmode: false
+                    metadata: {}
+                    paymentMethod: ideal
+                    createdAt: '2024-01-15T10:30:00Z'
+                    status: paid
+                    invoiceNumber: INV-2024-0001
+                    total:
+                      value: '35.09'
+                      currency: EUR
+                    subtotal:
+                      value: '29.00'
+                      currency: EUR
+                    taxSummary:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '6.09'
+                          currency: EUR
+                    lines:
+                      - id: order_item_Mn6xBtPvKw2RjTgYcZaE
+                        resource: orderline
+                        description: Pro Monthly Subscription
+                        quantity: 1
+                        basePrice:
+                          value: '29.00'
+                          currency: EUR
+                        total:
+                          value: '35.09'
+                          currency: EUR
+                        subtotal:
+                          value: '29.00'
+                          currency: EUR
+                        taxes:
+                          - taxRate:
+                              name: VAT
+                              percentage: 21
+                              taxablePercentage: 100
+                            amount:
+                              value: '6.09'
+                              currency: EUR
+                    merchantDetails:
+                      fullName: Vatly B.V.
+                      companyName: Vatly
+                      vatNumber: NL123456789B01
+                      streetAndNumber: Keizersgracht 123
+                      city: Amsterdam
+                      postalCode: 1015 CJ
+                      country: NL
+                      email: billing@vatly.com
+                    customerDetails:
+                      fullName: John Doe
+                      companyName: Acme Corp
+                      streetAndNumber: 123 Main Street
+                      city: Berlin
+                      postalCode: '10115'
+                      country: DE
+                      email: john@acme.com
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP
+                        type: application/json
+                      customer:
+                        href: https://api.vatly.com/v1/customers/customer_Xk9pQrSvWm4NjLhYbUcP
+                        type: application/json
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/orders
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -628,10 +1002,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Order'
               example:
-                id: ord_abc123
+                id: order_Hn5xWqVfKm8RjTgYbUcP
                 resource: order
-                merchantId: mer_xyz789
-                customerId: cus_def456
+                merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                customerId: customer_Xk9pQrSvWm4NjLhYbUcP
                 testmode: false
                 metadata: {}
                 paymentMethod: ideal
@@ -645,10 +1019,15 @@ paths:
                   value: '29.00'
                   currency: EUR
                 taxSummary:
-                  value: '6.09'
-                  currency: EUR
+                  - taxRate:
+                      name: VAT
+                      percentage: 21
+                      taxablePercentage: 100
+                    amount:
+                      value: '6.09'
+                      currency: EUR
                 lines:
-                  - id: oli_abc123
+                  - id: order_item_Jk4pQrSvWm8NjLhYbUcP
                     resource: orderline
                     description: Pro Monthly Subscription
                     quantity: 1
@@ -662,8 +1041,13 @@ paths:
                       value: '29.00'
                       currency: EUR
                     taxes:
-                      value: '6.09'
-                      currency: EUR
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '6.09'
+                          currency: EUR
                 merchantDetails:
                   fullName: Vatly B.V.
                   companyName: Vatly
@@ -683,10 +1067,10 @@ paths:
                   email: john@acme.com
                 links:
                   self:
-                    href: https://api.vatly.com/v1/orders/ord_abc123
+                    href: https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP
                     type: application/json
                   customer:
-                    href: https://api.vatly.com/v1/customers/cus_def456
+                    href: https://api.vatly.com/v1/customers/customer_Xk9pQrSvWm4NjLhYbUcP
                     type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -720,7 +1104,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AddressUpdateLink'
               example:
-                href: https://vatly.com/invoices/ord_abc123/edit?signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP/edit?signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 type: text/html
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -749,9 +1133,84 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Refund'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Refund'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: refund_Bm7xNvPwKr3YjTgHcZaE
+                    resource: refund
+                    orderId: null
+                    merchantId: merchant_Bm7xNvPwKr3YjTgHcZaE
+                    customerId: customer_Wt5mNvBxKw7YcZaEjLhR
+                    testmode: false
+                    createdAt: '2024-01-20T14:00:00Z'
+                    status: pending
+                    originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                    total:
+                      value: '12.10'
+                      currency: EUR
+                    subtotal:
+                      value: '10.00'
+                      currency: EUR
+                    taxSummary:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '2.10'
+                          currency: EUR
+                    lines:
+                      - id: refund_item_Jk4pQrSvWm8NjLhYbUcP
+                        resource: refundline
+                        description: Partial refund for service issue
+                        quantity: 1
+                        basePrice:
+                          value: '10.00'
+                          currency: EUR
+                        total:
+                          value: '12.10'
+                          currency: EUR
+                        subtotal:
+                          value: '10.00'
+                          currency: EUR
+                        taxes:
+                          - taxRate:
+                              name: VAT
+                              percentage: 21
+                              taxablePercentage: 100
+                            amount:
+                              value: '2.10'
+                              currency: EUR
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/refunds/refund_Bm7xNvPwKr3YjTgHcZaE
+                        type: application/json
+                      originalOrder:
+                        href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                        type: application/json
+                      order: null
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -791,7 +1250,7 @@ paths:
                 summary: Partial refund for one item
                 value:
                   items:
-                    - itemId: oli_abc123
+                    - itemId: order_item_Jk4pQrSvWm8NjLhYbUcP
                       amount:
                         value: '15.00'
                         currency: EUR
@@ -800,11 +1259,11 @@ paths:
                 summary: Refund multiple items
                 value:
                   items:
-                    - itemId: oli_abc123
+                    - itemId: order_item_Jk4pQrSvWm8NjLhYbUcP
                       amount:
                         value: '29.00'
                         currency: EUR
-                    - itemId: oli_def456
+                    - itemId: order_item_Tk7mNvBxKw2RjTgYcZaE
                       amount:
                         value: '10.00'
                         currency: EUR
@@ -818,15 +1277,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Refund'
               example:
-                id: ref_new123
+                id: refund_Mn6xBtPvKw2RjTgYcZaE
                 resource: refund
                 orderId: null
-                merchantId: mer_abc123
-                customerId: cus_xyz789
+                merchantId: merchant_Fp2kQrSvWm8NjLhYbUcP
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
                 testmode: false
                 createdAt: '2024-01-15T10:30:00Z'
                 status: pending
-                originalOrderId: ord_original123
+                originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
                 total:
                   value: '18.15'
                   currency: EUR
@@ -834,10 +1293,15 @@ paths:
                   value: '15.00'
                   currency: EUR
                 taxSummary:
-                  value: '3.15'
-                  currency: EUR
+                  - taxRate:
+                      name: VAT
+                      percentage: 21
+                      taxablePercentage: 100
+                    amount:
+                      value: '3.15'
+                      currency: EUR
                 lines:
-                  - id: rli_abc123
+                  - id: refund_item_Tk7mNvBxKw2RjTgYcZaE
                     resource: refundline
                     description: 50% refund for service issue
                     quantity: 1
@@ -851,14 +1315,19 @@ paths:
                       value: '15.00'
                       currency: EUR
                     taxes:
-                      value: '3.15'
-                      currency: EUR
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '3.15'
+                          currency: EUR
                 links:
                   self:
-                    href: https://api.vatly.com/v1/refunds/ref_new123
+                    href: https://api.vatly.com/v1/refunds/refund_Mn6xBtPvKw2RjTgYcZaE
                     type: application/json
                   originalOrder:
-                    href: https://api.vatly.com/v1/orders/ord_original123
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
                     type: application/json
                   order: null
         '401':
@@ -928,6 +1397,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Refund'
+              example:
+                id: refund_Rk5pQrSvWm8NjLhYbUcP
+                resource: refund
+                orderId: null
+                merchantId: merchant_Bm7xNvPwKr3YjTgHcZaE
+                customerId: customer_Wt5mNvBxKw7YcZaEjLhR
+                testmode: false
+                createdAt: '2024-01-21T09:00:00Z'
+                status: pending
+                originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                total:
+                  value: '35.09'
+                  currency: EUR
+                subtotal:
+                  value: '29.00'
+                  currency: EUR
+                taxSummary:
+                  - taxRate:
+                      name: VAT
+                      percentage: 21
+                      taxablePercentage: 100
+                    amount:
+                      value: '6.09'
+                      currency: EUR
+                lines:
+                  - id: refund_item_Bm7xNvPwKr3YjTgHcZaE
+                    resource: refundline
+                    description: Pro Monthly Subscription (Full Refund)
+                    quantity: 1
+                    basePrice:
+                      value: '29.00'
+                      currency: EUR
+                    total:
+                      value: '35.09'
+                      currency: EUR
+                    subtotal:
+                      value: '29.00'
+                      currency: EUR
+                    taxes:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '6.09'
+                          currency: EUR
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/refunds/refund_Rk5pQrSvWm8NjLhYbUcP
+                    type: application/json
+                  originalOrder:
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                    type: application/json
+                  order: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -956,6 +1479,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Refund'
+              example:
+                id: refund_Xk9pQrSvWm4NjLhYbUcP
+                resource: refund
+                orderId: order_Bm7xNvPwKr3YjTgHcZaE
+                merchantId: merchant_Bm7xNvPwKr3YjTgHcZaE
+                customerId: customer_Wt5mNvBxKw7YcZaEjLhR
+                testmode: false
+                createdAt: '2024-01-20T14:00:00Z'
+                status: refunded
+                originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                total:
+                  value: '18.15'
+                  currency: EUR
+                subtotal:
+                  value: '15.00'
+                  currency: EUR
+                taxSummary:
+                  - taxRate:
+                      name: VAT
+                      percentage: 21
+                      taxablePercentage: 100
+                    amount:
+                      value: '3.15'
+                      currency: EUR
+                lines:
+                  - id: refund_item_Mn6xBtPvKw2RjTgYcZaE
+                    resource: refundline
+                    description: Pro Monthly Subscription (Refund)
+                    quantity: 1
+                    basePrice:
+                      value: '15.00'
+                      currency: EUR
+                    total:
+                      value: '18.15'
+                      currency: EUR
+                    subtotal:
+                      value: '15.00'
+                      currency: EUR
+                    taxes:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '3.15'
+                          currency: EUR
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/refunds/refund_Xk9pQrSvWm4NjLhYbUcP
+                    type: application/json
+                  originalOrder:
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                    type: application/json
+                  order:
+                    href: https://api.vatly.com/v1/orders/order_Bm7xNvPwKr3YjTgHcZaE
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1019,9 +1598,55 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Chargeback'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Chargeback'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: chargeback_Fp2kQrSvWm8NjLhYbUcP
+                    resource: chargeback
+                    merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                    testmode: false
+                    createdAt: '2024-01-25T16:45:00Z'
+                    amount:
+                      value: '35.09'
+                      currency: EUR
+                    settlementAmount:
+                      value: '35.09'
+                      currency: EUR
+                    reason: product_not_received
+                    originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                    orderId: order_Rk5pQrSvWm8NjLhYbUcP
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/chargebacks/chargeback_Fp2kQrSvWm8NjLhYbUcP
+                        type: application/json
+                      originalOrder:
+                        href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                        type: application/json
+                      order:
+                        href: https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP
+                        type: application/json
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/chargebacks
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1050,6 +1675,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Chargeback'
+              example:
+                id: chargeback_Mn6xBtPvKw2RjTgYcZaE
+                resource: chargeback
+                merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                testmode: false
+                createdAt: '2024-01-25T16:45:00Z'
+                amount:
+                  value: '35.09'
+                  currency: EUR
+                settlementAmount:
+                  value: '35.09'
+                  currency: EUR
+                reason: fraud
+                originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                orderId: order_Rk5pQrSvWm8NjLhYbUcP
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE
+                    type: application/json
+                  originalOrder:
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                    type: application/json
+                  order:
+                    href: https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1075,9 +1725,86 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Refund'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Refund'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: refund_Xk9pQrSvWm4NjLhYbUcP
+                    resource: refund
+                    orderId: order_Bm7xNvPwKr3YjTgHcZaE
+                    merchantId: merchant_Bm7xNvPwKr3YjTgHcZaE
+                    customerId: customer_Wt5mNvBxKw7YcZaEjLhR
+                    testmode: false
+                    createdAt: '2024-01-20T14:00:00Z'
+                    status: refunded
+                    originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                    total:
+                      value: '18.15'
+                      currency: EUR
+                    subtotal:
+                      value: '15.00'
+                      currency: EUR
+                    taxSummary:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '3.15'
+                          currency: EUR
+                    lines:
+                      - id: refund_item_Mn6xBtPvKw2RjTgYcZaE
+                        resource: refundline
+                        description: Pro Monthly Subscription (Refund)
+                        quantity: 1
+                        basePrice:
+                          value: '15.00'
+                          currency: EUR
+                        total:
+                          value: '18.15'
+                          currency: EUR
+                        subtotal:
+                          value: '15.00'
+                          currency: EUR
+                        taxes:
+                          - taxRate:
+                              name: VAT
+                              percentage: 21
+                              taxablePercentage: 100
+                            amount:
+                              value: '3.15'
+                              currency: EUR
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/refunds/refund_Xk9pQrSvWm4NjLhYbUcP
+                        type: application/json
+                      originalOrder:
+                        href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                        type: application/json
+                      order:
+                        href: https://api.vatly.com/v1/orders/order_Bm7xNvPwKr3YjTgHcZaE
+                        type: application/json
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/refunds
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1100,6 +1827,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Refund'
+              example:
+                id: refund_Xk9pQrSvWm4NjLhYbUcP
+                resource: refund
+                orderId: order_Bm7xNvPwKr3YjTgHcZaE
+                merchantId: merchant_Bm7xNvPwKr3YjTgHcZaE
+                customerId: customer_Wt5mNvBxKw7YcZaEjLhR
+                testmode: false
+                createdAt: '2024-01-20T14:00:00Z'
+                status: refunded
+                originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                total:
+                  value: '18.15'
+                  currency: EUR
+                subtotal:
+                  value: '15.00'
+                  currency: EUR
+                taxSummary:
+                  - taxRate:
+                      name: VAT
+                      percentage: 21
+                      taxablePercentage: 100
+                    amount:
+                      value: '3.15'
+                      currency: EUR
+                lines:
+                  - id: refund_item_Mn6xBtPvKw2RjTgYcZaE
+                    resource: refundline
+                    description: Pro Monthly Subscription (Refund)
+                    quantity: 1
+                    basePrice:
+                      value: '15.00'
+                      currency: EUR
+                    total:
+                      value: '18.15'
+                      currency: EUR
+                    subtotal:
+                      value: '15.00'
+                      currency: EUR
+                    taxes:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '3.15'
+                          currency: EUR
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/refunds/refund_Xk9pQrSvWm4NjLhYbUcP
+                    type: application/json
+                  originalOrder:
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                    type: application/json
+                  order:
+                    href: https://api.vatly.com/v1/orders/order_Bm7xNvPwKr3YjTgHcZaE
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1129,34 +1912,55 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Chargeback'
-              example:
-                - id: chargeback_abc123
-                  resource: chargeback
-                  merchantId: mer_xyz789
-                  testmode: false
-                  createdAt: '2024-01-15T10:30:00Z'
-                  amount:
-                    value: '35.09'
-                    currency: EUR
-                  settlementAmount:
-                    value: '35.09'
-                    currency: EUR
-                  reason: fraud
-                  originalOrderId: ord_original123
-                  orderId: ord_chargeback456
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Chargeback'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 1
                   links:
-                    self:
-                      href: https://api.vatly.com/v1/chargebacks/chargeback_abc123
-                      type: application/json
-                    originalOrder:
-                      href: https://api.vatly.com/v1/orders/ord_original123
-                      type: application/json
-                    order:
-                      href: https://api.vatly.com/v1/orders/ord_chargeback456
-                      type: application/json
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: chargeback_Mn6xBtPvKw2RjTgYcZaE
+                    resource: chargeback
+                    merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                    testmode: false
+                    createdAt: '2024-01-15T10:30:00Z'
+                    amount:
+                      value: '35.09'
+                      currency: EUR
+                    settlementAmount:
+                      value: '35.09'
+                      currency: EUR
+                    reason: fraud
+                    originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                    orderId: order_Rk5pQrSvWm8NjLhYbUcP
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE
+                        type: application/json
+                      originalOrder:
+                        href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                        type: application/json
+                      order:
+                        href: https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP
+                        type: application/json
+                count: 1
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/chargebacks
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1179,6 +1983,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Chargeback'
+              example:
+                id: chargeback_Mn6xBtPvKw2RjTgYcZaE
+                resource: chargeback
+                merchantId: merchant_Tk7mNvBxKw2RjTgYcZaE
+                testmode: false
+                createdAt: '2024-01-25T16:45:00Z'
+                amount:
+                  value: '35.09'
+                  currency: EUR
+                settlementAmount:
+                  value: '35.09'
+                  currency: EUR
+                reason: fraud
+                originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
+                orderId: order_Rk5pQrSvWm8NjLhYbUcP
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE
+                    type: application/json
+                  originalOrder:
+                    href: https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP
+                    type: application/json
+                  order:
+                    href: https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1205,9 +2034,100 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Subscription'
+                type: object
+                required:
+                  - data
+                  - count
+                  - links
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subscription'
+                  count:
+                    type: integer
+                    description: Number of items in the current page
+                    example: 2
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+              example:
+                data:
+                  - id: subscription_Lp3mNvBxKw7RjTgYcZaE
+                    resource: subscription
+                    customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                    testmode: false
+                    name: Pro Monthly
+                    description: Full access to all Pro features
+                    billingAddress:
+                      fullName: John Doe
+                      companyName: Acme Corp
+                      streetAndNumber: 123 Main Street
+                      city: Berlin
+                      postalCode: '10115'
+                      country: DE
+                    basePrice:
+                      value: '29.00'
+                      currency: EUR
+                    quantity: 1
+                    interval: month
+                    intervalCount: 1
+                    status: active
+                    startedAt: '2024-01-15T10:30:00Z'
+                    endedAt: null
+                    cancelledAt: null
+                    renewedAt: '2024-02-15T10:30:00Z'
+                    renewedUntil: '2024-03-15T10:30:00Z'
+                    nextRenewalAt: '2024-03-15T10:30:00Z'
+                    trialUntil: null
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE
+                        type: application/json
+                      customer:
+                        href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
+                        type: application/json
+                  - id: subscription_Wt5mNvBxKw7YcZaEjLhR
+                    resource: subscription
+                    customerId: customer_Mn6xBtPvKw2RjTgYcZaE
+                    testmode: false
+                    name: Enterprise Yearly
+                    description: Enterprise features with priority support
+                    billingAddress:
+                      fullName: Jane Smith
+                      companyName: TechCorp Ltd
+                      vatNumber: GB123456789
+                      streetAndNumber: 456 Tech Lane
+                      city: London
+                      postalCode: EC1A 1BB
+                      country: GB
+                    basePrice:
+                      value: '990.00'
+                      currency: EUR
+                    quantity: 5
+                    interval: year
+                    intervalCount: 1
+                    status: active
+                    startedAt: '2024-01-01T00:00:00Z'
+                    endedAt: null
+                    cancelledAt: null
+                    renewedAt: '2024-01-01T00:00:00Z'
+                    renewedUntil: '2025-01-01T00:00:00Z'
+                    nextRenewalAt: '2025-01-01T00:00:00Z'
+                    trialUntil: null
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/subscriptions/subscription_Wt5mNvBxKw7YcZaEjLhR
+                        type: application/json
+                      customer:
+                        href: https://api.vatly.com/v1/customers/customer_Mn6xBtPvKw2RjTgYcZaE
+                        type: application/json
+                count: 2
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/subscriptions
+                    type: application/json
+                  next: null
+                  prev: null
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1231,9 +2151,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Subscription'
               example:
-                id: sub_abc123
+                id: subscription_Lp3mNvBxKw7RjTgYcZaE
                 resource: subscription
-                customerId: cus_xyz789
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
                 testmode: false
                 name: Pro Monthly
                 description: Full access to all Pro features
@@ -1260,10 +2180,10 @@ paths:
                 trialUntil: null
                 links:
                   self:
-                    href: https://api.vatly.com/v1/subscriptions/sub_abc123
+                    href: https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE
                     type: application/json
                   customer:
-                    href: https://api.vatly.com/v1/customers/cus_xyz789
+                    href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
                     type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -1312,7 +2232,7 @@ paths:
               changePlan:
                 summary: Upgrade to yearly plan
                 value:
-                  subscriptionPlanId: plan_yearly
+                  subscriptionPlanId: subscription_plan_Wt5mNvBxKw7YcZaEjLhR
                   prorate: true
                   applyImmediately: true
               changeQuantity:
@@ -1324,7 +2244,7 @@ paths:
               scheduledChange:
                 summary: Schedule plan change for next cycle
                 value:
-                  subscriptionPlanId: plan_enterprise
+                  subscriptionPlanId: subscription_plan_Fp2kQrSvWm8NjLhYbUcP
                   applyImmediately: false
               extendTrial:
                 summary: Extend trial period
@@ -1337,6 +2257,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Subscription'
+              example:
+                id: subscription_Lp3mNvBxKw7RjTgYcZaE
+                resource: subscription
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                testmode: false
+                name: Pro Yearly
+                description: Full access to all Pro features, billed yearly
+                billingAddress:
+                  fullName: John Doe
+                  companyName: Acme Corp
+                  streetAndNumber: 123 Main Street
+                  city: Berlin
+                  postalCode: '10115'
+                  country: DE
+                basePrice:
+                  value: '290.00'
+                  currency: EUR
+                quantity: 1
+                interval: year
+                intervalCount: 1
+                status: active
+                startedAt: '2024-01-15T10:30:00Z'
+                endedAt: null
+                cancelledAt: null
+                renewedAt: '2024-02-15T10:30:00Z'
+                renewedUntil: '2025-02-15T10:30:00Z'
+                nextRenewalAt: '2025-02-15T10:30:00Z'
+                trialUntil: null
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
+                  customer:
+                    href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1447,7 +2402,7 @@ paths:
                     type: string
                     format: uri
                     description: URL to redirect customer for billing update
-                    example: https://vatly.com/subscriptions/sub_abc123/billing?token=xyz...
+                    example: https://vatly.com/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/billing?token=xyz...
                   type:
                     type: string
                     const: text/html
@@ -1460,6 +2415,153 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+  /test-helpers/subscriptions/{subscriptionId}/fast-forward-renewal:
+    post:
+      operationId: fastForwardSubscriptionRenewal
+      summary: Fast-forward subscription renewal
+      description: |
+        Simulates a subscription renewal cycle for testing purposes.
+
+        **Requirements:**
+        - Only available in test mode (requires `test_` prefixed API token)
+        - Subscription must belong to the authenticated merchant
+
+        **Use cases:**
+        - Test renewal billing flows without waiting for the actual billing cycle
+        - Verify subscription lifecycle events and webhooks
+      tags:
+        - Test Helpers
+      parameters:
+        - $ref: '#/components/parameters/subscriptionId'
+      responses:
+        '200':
+          description: Subscription renewed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+              example:
+                id: subscription_Lp3mNvBxKw7RjTgYcZaE
+                resource: subscription
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                testmode: true
+                name: Pro Monthly
+                description: Full access to all Pro features
+                billingAddress:
+                  fullName: John Doe
+                  companyName: Acme Corp
+                  streetAndNumber: 123 Main Street
+                  city: Berlin
+                  postalCode: '10115'
+                  country: DE
+                basePrice:
+                  value: '29.00'
+                  currency: EUR
+                quantity: 1
+                interval: month
+                intervalCount: 1
+                status: active
+                startedAt: '2024-01-15T10:30:00Z'
+                endedAt: null
+                cancelledAt: null
+                renewedAt: '2024-03-15T10:30:00Z'
+                renewedUntil: '2024-04-15T10:30:00Z'
+                nextRenewalAt: '2024-04-15T10:30:00Z'
+                trialUntil: null
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
+                  customer:
+                    href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /test-helpers/mandated-payments/{transactionId}/simulate-failure:
+    post:
+      operationId: simulatePaymentFailure
+      summary: Simulate a payment failure
+      description: |
+        Simulates a failed mandated payment for testing purposes.
+
+        **Requirements:**
+        - Only available in test mode (requires `test_` prefixed API token)
+        - Transaction must belong to the authenticated merchant
+
+        **Use cases:**
+        - Test payment failure handling and retry logic
+        - Verify dunning flow behavior
+        - Test webhook notifications for failed payments
+      tags:
+        - Test Helpers
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          description: ID of the mandated payment transaction to fail
+          schema:
+            type: string
+          example: mollie_mandated_payment_Xk9pQrSvWm4NjLhYbUcP
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: |
+                    Reason for the simulated failure. Defaults to `general_failure` if not provided.
+                  enum:
+                    - insufficient_funds
+                    - invalid_mandate
+                    - mandate_canceled
+                    - account_closed
+                    - card_expired
+                    - authentication_failed
+                    - general_failure
+                  example: insufficient_funds
+            example:
+              reason: insufficient_funds
+      responses:
+        '200':
+          description: Payment failure simulated
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - status
+                  - failureReason
+                properties:
+                  id:
+                    type: string
+                    description: ID of the failed transaction
+                    example: mollie_mandated_payment_Xk9pQrSvWm4NjLhYbUcP
+                  status:
+                    type: string
+                    const: failed
+                    example: failed
+                  failureReason:
+                    type: string
+                    description: The failure reason applied
+                    example: insufficient_funds
+              example:
+                id: mollie_mandated_payment_Xk9pQrSvWm4NjLhYbUcP
+                status: failed
+                failureReason: insufficient_funds
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     BearerAuth:
@@ -1504,7 +2606,7 @@ components:
       required: false
       schema:
         type: string
-      example: chk_abc123
+      example: checkout_QdEpFhdSrG4Y3DnfsdqsH
     endingBefore:
       name: endingBefore
       in: query
@@ -1515,7 +2617,7 @@ components:
       required: false
       schema:
         type: string
-      example: chk_xyz789
+      example: checkout_Rk5pQrSvWm8NjLhYbUcP
     checkoutId:
       name: checkoutId
       in: path
@@ -1523,7 +2625,7 @@ components:
       required: true
       schema:
         type: string
-      example: chk_abc123def456
+      example: checkout_QdEpFhdSrG4Y3DnfsdqsH
     customerId:
       name: customerId
       in: path
@@ -1531,7 +2633,7 @@ components:
       required: true
       schema:
         type: string
-      example: cus_abc123def456
+      example: customer_7kBmRtPvXw2NjLhYcZaE
     subscriptionId:
       name: subscriptionId
       in: path
@@ -1539,7 +2641,7 @@ components:
       required: true
       schema:
         type: string
-      example: sub_abc123def456
+      example: subscription_Lp3mNvBxKw7RjTgYcZaE
     oneOffProductId:
       name: oneOffProductId
       in: path
@@ -1547,8 +2649,8 @@ components:
       required: true
       schema:
         type: string
-        pattern: ^prod_
-      example: prod_abc123def456
+        pattern: ^one_off_product_
+      example: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
     subscriptionPlanId:
       name: subscriptionPlanId
       in: path
@@ -1556,8 +2658,8 @@ components:
       required: true
       schema:
         type: string
-        pattern: ^plan_
-      example: plan_abc123def456
+        pattern: ^subscription_plan_
+      example: subscription_plan_Wt5mNvBxKw7YcZaEjLhR
     orderId:
       name: orderId
       in: path
@@ -1565,7 +2667,7 @@ components:
       required: true
       schema:
         type: string
-      example: ord_abc123def456
+      example: order_Hn5xWqVfKm8RjTgYbUcP
     refundId:
       name: refundId
       in: path
@@ -1573,7 +2675,7 @@ components:
       required: true
       schema:
         type: string
-      example: ref_abc123def456
+      example: refund_Xk9pQrSvWm4NjLhYbUcP
     chargebackId:
       name: chargebackId
       in: path
@@ -1581,7 +2683,7 @@ components:
       required: true
       schema:
         type: string
-      example: chargeback_abc123def456
+      example: chargeback_Mn6xBtPvKw2RjTgYcZaE
   responses:
     Unauthorized:
       description: Unauthorized - Authentication credentials were missing or invalid
@@ -1703,7 +2805,7 @@ components:
           type: string
           format: uri
           description: URL of the linked resource
-          example: https://api.vatly.com/v1/orders/ord_abc123
+          example: https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP
         type:
           type: string
           description: |
@@ -1853,6 +2955,26 @@ components:
       example:
         orderId: internal-12345
         campaign: summer-sale
+    PaginationLinks:
+      type: object
+      description: Pagination links for navigating list results
+      required:
+        - self
+      properties:
+        self:
+          allOf:
+            - $ref: '#/components/schemas/Link'
+          description: Link to the current page
+        next:
+          oneOf:
+            - $ref: '#/components/schemas/Link'
+            - type: 'null'
+          description: Link to the next page (null if on the last page)
+        prev:
+          oneOf:
+            - $ref: '#/components/schemas/Link'
+            - type: 'null'
+          description: Link to the previous page (null if on the first page)
     Error:
       type: object
       description: Standard error response
@@ -1909,7 +3031,7 @@ components:
         id:
           type: string
           description: Unique identifier for the checkout
-          example: chk_abc123def456
+          example: checkout_QdEpFhdSrG4Y3DnfsdqsH
         resource:
           type: string
           description: Resource type identifier
@@ -1918,7 +3040,7 @@ components:
         merchantId:
           type: string
           description: ID of the merchant that owns this checkout
-          example: mer_abc123
+          example: merchant_Fp2kQrSvWm8NjLhYbUcP
         orderId:
           type:
             - string
@@ -1926,7 +3048,7 @@ components:
           description: |
             ID of the order created from this checkout.
             Only present after checkout completion.
-          example: ord_xyz789
+          example: order_Tk7mNvBxKw2RjTgYcZaE
         testmode:
           type: boolean
           description: Whether this checkout is in test mode
@@ -2001,10 +3123,10 @@ components:
           type: string
           description: |
             Product identifier. Must be either:
-            - A one-off product ID (starts with `prod_`)
-            - A subscription plan ID (starts with `plan_`)
-          pattern: ^(prod_|plan_)
-          example: prod_abc123
+            - A one-off product ID (starts with `one_off_product_`)
+            - A subscription plan ID (starts with `subscription_plan_`)
+          pattern: ^(one_off_product_|subscription_plan_)
+          example: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
         quantity:
           type: integer
           description: Number of units to purchase
@@ -2041,7 +3163,7 @@ components:
           type: string
           format: uri
           description: URL to redirect customers after successful payment
-          example: https://example.com/success?session_id=chk_abc123
+          example: https://example.com/success?session_id=checkout_QdEpFhdSrG4Y3DnfsdqsH
         redirectUrlCanceled:
           type: string
           format: uri
@@ -2055,7 +3177,7 @@ components:
             Existing customer ID to associate with this checkout.
             If provided, the customer's email will be pre-filled.
             Must match the testmode of the API token.
-          example: cus_abc123
+          example: customer_7kBmRtPvXw2NjLhYcZaE
         metadata:
           $ref: '#/components/schemas/Metadata'
         products:
@@ -2065,9 +3187,9 @@ components:
           items:
             $ref: '#/components/schemas/CheckoutProduct'
           example:
-            - id: prod_abc123
+            - id: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
               quantity: 1
-            - id: plan_xyz789
+            - id: subscription_plan_Rk5pQrSvWm8NjLhYbUcP
               trialDays: 14
     Customer:
       type: object
@@ -2086,7 +3208,7 @@ components:
         id:
           type: string
           description: Unique identifier for the customer
-          example: cus_abc123def456
+          example: customer_7kBmRtPvXw2NjLhYcZaE
         resource:
           type: string
           description: Resource type identifier
@@ -2150,9 +3272,9 @@ components:
       properties:
         id:
           type: string
-          description: Unique identifier for the product (always starts with `prod_`)
-          pattern: ^prod_
-          example: prod_abc123def456
+          description: Unique identifier for the product (always starts with `one_off_product_`)
+          pattern: ^one_off_product_
+          example: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
         resource:
           type: string
           description: Resource type identifier
@@ -2177,14 +3299,14 @@ components:
           type: string
           description: |
             Current status of the product:
-            - `approved` - Product is active and can be purchased
-            - `draft` - Product is not yet available for purchase
-            - `archived` - Product has been archived
+            - `active` - Product is active and can be purchased
+            - `pending` - Product is awaiting approval
+            - `rejected` - Product has been rejected
           enum:
-            - approved
-            - draft
-            - archived
-          example: approved
+            - active
+            - pending
+            - rejected
+          example: active
         createdAt:
           type: string
           format: date-time
@@ -2219,9 +3341,9 @@ components:
       properties:
         id:
           type: string
-          description: Unique identifier for the plan (always starts with `plan_`)
-          pattern: ^plan_
-          example: plan_abc123def456
+          description: Unique identifier for the plan (always starts with `subscription_plan_`)
+          pattern: ^subscription_plan_
+          example: subscription_plan_Wt5mNvBxKw7YcZaEjLhR
         resource:
           type: string
           description: Resource type identifier
@@ -2267,14 +3389,14 @@ components:
           type: string
           description: |
             Current status of the plan:
-            - `approved` - Plan is active and can be subscribed to
-            - `draft` - Plan is not yet available
-            - `archived` - Plan has been archived
+            - `active` - Plan is active and can be subscribed to
+            - `pending` - Plan is awaiting approval
+            - `rejected` - Plan has been rejected
           enum:
-            - approved
-            - draft
-            - archived
-          example: approved
+            - active
+            - pending
+            - rejected
+          example: active
         createdAt:
           type: string
           format: date-time
@@ -2314,7 +3436,7 @@ components:
         id:
           type: string
           description: Unique identifier for the order
-          example: ord_abc123def456
+          example: order_Hn5xWqVfKm8RjTgYbUcP
         resource:
           type: string
           description: Resource type identifier
@@ -2323,11 +3445,11 @@ components:
         merchantId:
           type: string
           description: ID of the merchant that owns this order
-          example: mer_abc123
+          example: merchant_Fp2kQrSvWm8NjLhYbUcP
         customerId:
           type: string
           description: ID of the customer who made this purchase
-          example: cus_xyz789
+          example: customer_Lp3mNvBxKw7RjTgYcZaE
         testmode:
           type: boolean
           description: Whether this order is in test mode
@@ -2351,13 +3473,17 @@ components:
           type: string
           description: |
             Current status of the order:
+            - `created` - Order has just been created
             - `pending` - Payment is being processed
             - `paid` - Payment successful
-            - `failed` - Payment failed
+            - `canceled` - Order has been canceled
+            - `expired` - Order has expired
           enum:
+            - created
             - pending
             - paid
-            - failed
+            - canceled
+            - expired
           example: paid
         invoiceNumber:
           type:
@@ -2372,8 +3498,10 @@ components:
           $ref: '#/components/schemas/Money'
           description: Subtotal amount before taxes
         taxSummary:
-          $ref: '#/components/schemas/Money'
-          description: Total tax amount
+          type: array
+          description: Tax breakdown by rate
+          items:
+            $ref: '#/components/schemas/TaxSummaryItem'
         lines:
           type: array
           description: Line items in this order
@@ -2400,6 +3528,10 @@ components:
               allOf:
                 - $ref: '#/components/schemas/Link'
               description: Link to the customer who made this purchase
+            customerInvoice:
+              allOf:
+                - $ref: '#/components/schemas/Link'
+              description: Link to the customer-facing invoice in the customer portal
     OrderLine:
       type: object
       description: A line item in an order
@@ -2416,7 +3548,7 @@ components:
         id:
           type: string
           description: Unique identifier for this line item
-          example: oli_abc123
+          example: order_item_Jk4pQrSvWm8NjLhYbUcP
         resource:
           type: string
           description: Resource type identifier
@@ -2441,8 +3573,10 @@ components:
           $ref: '#/components/schemas/Money'
           description: Subtotal before taxes (basePrice * quantity)
         taxes:
-          $ref: '#/components/schemas/Money'
-          description: Tax amount for this line
+          type: array
+          description: Tax breakdown by rate for this line
+          items:
+            $ref: '#/components/schemas/TaxSummaryItem'
     AddressUpdateLink:
       type: object
       description: A signed URL to update order billing address
@@ -2456,7 +3590,7 @@ components:
           description: |
             Signed URL to the address update page.
             Valid for a limited time (typically 24 hours).
-          example: https://vatly.com/invoices/ord_abc123/edit?signature=abc123...
+          example: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP/edit?signature=abc123...
         type:
           type: string
           description: Content type of the linked page
@@ -2485,7 +3619,7 @@ components:
         id:
           type: string
           description: Unique identifier for the refund
-          example: ref_abc123def456
+          example: refund_Xk9pQrSvWm4NjLhYbUcP
         resource:
           type: string
           description: Resource type identifier
@@ -2498,15 +3632,15 @@ components:
           description: |
             ID of the credit note order created for this refund.
             Only present after the refund is processed.
-          example: ord_credit123
+          example: order_Vr8kQdFhSrG4Y3DnfsdqH
         merchantId:
           type: string
           description: ID of the merchant
-          example: mer_abc123
+          example: merchant_Fp2kQrSvWm8NjLhYbUcP
         customerId:
           type: string
           description: ID of the customer receiving the refund
-          example: cus_xyz789
+          example: customer_Lp3mNvBxKw7RjTgYcZaE
         testmode:
           type: boolean
           description: Whether this refund is in test mode
@@ -2520,20 +3654,24 @@ components:
           type: string
           description: |
             Current status of the refund:
-            - `pending` - Refund is being processed
-            - `completed` - Refund has been processed successfully
-            - `failed` - Refund failed
+            - `pending` - Refund is ready to be sent to the bank
+            - `queued` - Refund is queued due to a lack of balance
+            - `processing` - Refund is being processed (cancellation no longer possible)
+            - `refunded` - Refund has been processed successfully
+            - `failed` - Refund has failed after processing
             - `canceled` - Refund was canceled
           enum:
             - pending
-            - completed
+            - queued
+            - processing
+            - refunded
             - failed
             - canceled
-          example: completed
+          example: refunded
         originalOrderId:
           type: string
           description: ID of the original order being refunded
-          example: ord_original123
+          example: order_Fp2kQrSvWm8NjLhYbUcP
         total:
           $ref: '#/components/schemas/Money'
           description: Total refund amount including taxes
@@ -2541,8 +3679,10 @@ components:
           $ref: '#/components/schemas/Money'
           description: Refund subtotal before taxes
         taxSummary:
-          $ref: '#/components/schemas/Money'
-          description: Total tax amount being refunded
+          type: array
+          description: Tax breakdown by rate being refunded
+          items:
+            $ref: '#/components/schemas/TaxSummaryItem'
         lines:
           type: array
           description: Refund line items
@@ -2584,7 +3724,7 @@ components:
         id:
           type: string
           description: Unique identifier for this refund line
-          example: rli_abc123
+          example: refund_item_Tk7mNvBxKw2RjTgYcZaE
         resource:
           type: string
           description: Resource type identifier
@@ -2609,8 +3749,10 @@ components:
           $ref: '#/components/schemas/Money'
           description: Refund subtotal before taxes
         taxes:
-          $ref: '#/components/schemas/Money'
-          description: Tax amount being refunded
+          type: array
+          description: Tax breakdown by rate being refunded
+          items:
+            $ref: '#/components/schemas/TaxSummaryItem'
     CreateRefundRequest:
       type: object
       description: Request body for creating a partial refund
@@ -2624,7 +3766,7 @@ components:
           items:
             $ref: '#/components/schemas/RefundItem'
           example:
-            - itemId: oli_abc123
+            - itemId: order_item_Jk4pQrSvWm8NjLhYbUcP
               amount:
                 value: '15.00'
                 currency: EUR
@@ -2657,7 +3799,7 @@ components:
         id:
           type: string
           description: Unique identifier for the chargeback
-          example: chargeback_abc123def456
+          example: chargeback_Mn6xBtPvKw2RjTgYcZaE
         resource:
           type: string
           description: Resource type identifier
@@ -2666,7 +3808,7 @@ components:
         merchantId:
           type: string
           description: ID of the merchant
-          example: mer_abc123
+          example: merchant_Fp2kQrSvWm8NjLhYbUcP
         testmode:
           type: boolean
           description: Whether this chargeback is in test mode
@@ -2698,7 +3840,7 @@ components:
         originalOrderId:
           type: string
           description: ID of the original order that was charged back
-          example: ord_original123
+          example: order_Fp2kQrSvWm8NjLhYbUcP
         orderId:
           type:
             - string
@@ -2706,7 +3848,7 @@ components:
           description: |
             ID of the credit note order created for this chargeback.
             Only present after the chargeback is processed.
-          example: ord_chargeback123
+          example: order_Rk5pQrSvWm8NjLhYbUcP
         links:
           type: object
           description: HATEOAS links to related resources
@@ -2750,7 +3892,7 @@ components:
         id:
           type: string
           description: Unique identifier for the subscription
-          example: sub_abc123def456
+          example: subscription_Lp3mNvBxKw7RjTgYcZaE
         resource:
           type: string
           description: Resource type identifier
@@ -2759,7 +3901,7 @@ components:
         customerId:
           type: string
           description: ID of the customer who owns this subscription
-          example: cus_xyz789
+          example: customer_Lp3mNvBxKw7RjTgYcZaE
         testmode:
           type: boolean
           description: Whether this subscription is in test mode
@@ -2891,8 +4033,8 @@ components:
           description: |
             ID of the new subscription plan.
             Must match the testmode of the current subscription.
-          pattern: ^plan_
-          example: plan_yearly
+          pattern: ^subscription_plan_
+          example: subscription_plan_Wt5mNvBxKw7YcZaEjLhR
         quantity:
           type: integer
           description: New quantity (e.g., number of seats)
@@ -2963,6 +4105,38 @@ components:
           description: |
             Pre-fill billing address fields.
             Customer can modify these values in the hosted form.
+    TaxSummaryRate:
+      type: object
+      description: Simplified tax rate information
+      required:
+        - name
+        - percentage
+        - taxablePercentage
+      properties:
+        name:
+          type: string
+          description: Human-readable name of the tax rate
+          example: VAT
+        percentage:
+          type: number
+          description: Tax rate percentage
+          example: 21
+        taxablePercentage:
+          type: number
+          description: Percentage of the amount that is taxable
+          example: 100
+    TaxSummaryItem:
+      type: object
+      description: A single tax rate entry with its calculated amount
+      required:
+        - taxRate
+        - amount
+      properties:
+        taxRate:
+          $ref: '#/components/schemas/TaxSummaryRate'
+        amount:
+          $ref: '#/components/schemas/Money'
+          description: Tax amount for this rate
     RefundItem:
       type: object
       description: An item to refund from an order
@@ -2973,7 +4147,7 @@ components:
         itemId:
           type: string
           description: ID of the order line item to refund
-          example: oli_abc123
+          example: order_item_Jk4pQrSvWm8NjLhYbUcP
         amount:
           $ref: '#/components/schemas/Money'
           description: |

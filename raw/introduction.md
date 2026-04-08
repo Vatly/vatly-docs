@@ -1,4 +1,6 @@
-# Welcome to Vatly
+# Introduction
+
+> 
 
 > Vatly is the Merchant of Record for European SaaS companies, enabling you to sell worldwide through a single API.
 

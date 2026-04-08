@@ -366,7 +366,7 @@ This endpoint retrieves a paginated list of all subscription plans. Only plans w
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/subscription-plans \
@@ -489,7 +489,7 @@ This endpoint retrieves a specific subscription plan by its ID.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7xNvPwKr3YjTgHcZaE \

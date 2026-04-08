@@ -376,7 +376,7 @@ This endpoint allows you to retrieve a paginated list of all chargebacks across 
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/chargebacks \
@@ -489,7 +489,7 @@ This endpoint allows you to retrieve a specific chargeback by its ID.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE \
@@ -642,7 +642,7 @@ This endpoint allows you to retrieve a paginated list of chargebacks for a speci
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/chargebacks \
@@ -773,7 +773,7 @@ This endpoint allows you to retrieve a specific chargeback within an order conte
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE \

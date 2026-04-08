@@ -750,7 +750,7 @@ This endpoint allows you to create a partial refund for a specific order. You sp
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds \
@@ -957,7 +957,7 @@ This endpoint allows you to create a full refund for a specific order. This will
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds/full \
@@ -1154,7 +1154,7 @@ This endpoint allows you to retrieve a list of all refunds for a specific order.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds \
@@ -1328,7 +1328,7 @@ This endpoint allows you to retrieve details of a specific refund for a specific
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds/refund_Xk9pQrSvWm4NjLhYbUcP \
@@ -1492,7 +1492,7 @@ This endpoint allows you to cancel a pending refund for a specific order. Only p
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X DELETE https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds/refund_Mn6xBtPvKw2RjTgYcZaE \

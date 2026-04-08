@@ -312,7 +312,7 @@ Only products with `active` status can be used in checkouts.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/one-off-products \
@@ -412,7 +412,7 @@ This endpoint retrieves a specific one-off product by its ID.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/one-off-products/one_off_product_Vr8kQdFhSrG4Y3DnfsdqH \

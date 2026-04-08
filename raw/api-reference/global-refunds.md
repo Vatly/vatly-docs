@@ -472,7 +472,7 @@ This endpoint allows you to retrieve a paginated list of all refunds across your
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/refunds \
@@ -632,7 +632,7 @@ This endpoint allows you to retrieve details of a specific refund.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/refunds/refund_Xk9pQrSvWm4NjLhYbUcP \

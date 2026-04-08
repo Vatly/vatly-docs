@@ -250,7 +250,7 @@ This endpoint allows you to retrieve a paginated list of all your customers. By 
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/customers \
@@ -403,7 +403,7 @@ Customers are uniquely identified by email within each testmode. Creating a cust
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/customers \
@@ -453,7 +453,7 @@ $vatly->customers->create([
 
 This endpoint allows you to retrieve a customer by providing their Vatly id. Refer to [the list](#the-customer-api-resource) at the top of this page to see which properties are included with customer objects.
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE \

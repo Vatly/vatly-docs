@@ -572,7 +572,7 @@ This endpoint allows you to retrieve a paginated list of all subscriptions acros
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/subscriptions \
@@ -741,7 +741,7 @@ This endpoint allows you to retrieve a specific subscription by its ID.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
@@ -906,7 +906,7 @@ This endpoint allows you to retrieve a paginated list of all subscriptions for a
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE/subscriptions \
@@ -1049,7 +1049,7 @@ This endpoint allows you to retrieve a specific subscription for a specific cust
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
@@ -1302,7 +1302,7 @@ At least one of `subscriptionPlanId` or `quantity` must be provided.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
@@ -1481,7 +1481,7 @@ This endpoint initiates a hosted flow for updating subscription billing details.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/update-billing \
@@ -1575,7 +1575,7 @@ This endpoint allows you to cancel a subscription. By default, the subscription 
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X DELETE https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \

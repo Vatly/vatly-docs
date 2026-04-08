@@ -12,7 +12,7 @@ For example, if you're creating a checkout and the request fails due to a networ
 
 To make an idempotent request, include a unique `Idempotency-Key` header with your request:
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/checkouts \

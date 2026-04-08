@@ -724,7 +724,7 @@ This endpoint allows you to retrieve a paginated list of all your orders. By def
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/orders \
@@ -905,7 +905,7 @@ This endpoint allows you to retrieve a specific order by its ID.
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP \
@@ -1076,7 +1076,7 @@ This endpoint allows you to request a signed link that customers can use to upda
 </tbody>
 </table>
 
-<code-group>
+<code-group sync="api">
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP/request-address-update-link \

@@ -41,7 +41,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     
     <td>
       Unique identifier for the checkout (starts with <code>
-        chk_
+        checkout_
       </code>
       
       ).
@@ -84,7 +84,11 @@ Below you'll find all properties for the Vatly Checkout API resource.
     </td>
     
     <td>
-      Unique identifier for the merchant this checkout belongs to.
+      Unique identifier for the merchant this checkout belongs to (starts with <code>
+        merchant_
+      </code>
+      
+      ).
     </td>
   </tr>
   
@@ -387,45 +391,39 @@ $checkouts = $vatly->checkouts->page();
 {
   "data": [
     {
-      "id": "chk_abc123def456",
+      "id": "checkout_QdEpFhdSrG4Y3DnfsdqsH",
       "resource": "checkout",
-      "merchantId": "mer_abc123",
-      "orderId": "ord_xyz789",
+      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
+      "orderId": null,
       "testmode": false,
       "redirectUrlSuccess": "https://example.com/success",
       "redirectUrlCanceled": "https://example.com/canceled",
-      "metadata": null,
-      "status": "paid",
-      "expiresAt": "2024-01-15T14:30:00Z",
+      "metadata": {},
+      "status": "created",
+      "expiresAt": "2024-01-16T10:30:00Z",
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "checkoutUrl": {
-          "href": "https://pay.vatly.com/chk_abc123def456",
+          "href": "https://checkout.vatly.com/checkout_QdEpFhdSrG4Y3DnfsdqsH",
           "type": "text/html"
         },
         "self": {
-          "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+          "href": "https://api.vatly.com/v1/checkouts/checkout_QdEpFhdSrG4Y3DnfsdqsH",
           "type": "application/json"
         },
-        "order": {
-          "href": "https://api.vatly.com/v1/orders/ord_xyz789",
-          "type": "application/json"
-        }
+        "order": null
       }
     }
   ],
+  "count": 1,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/checkouts?limit=10",
+      "href": "https://api.vatly.com/v1/checkouts",
       "type": "application/json"
     },
-    "next": {
-      "href": "https://api.vatly.com/v1/checkouts?startingAfter=chk_abc123def456&limit=10",
-      "type": "application/json"
-    },
+    "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -480,11 +478,11 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
       </code>
       
        (required, starts with <code>
-        prod_
+        one_off_product_
       </code>
       
        or <code>
-        plan_
+        subscription_plan_
       </code>
       
       ), <code>
@@ -611,8 +609,8 @@ curl https://api.vatly.com/v1/checkouts \
   -H "Content-Type: application/json" \
   -d '{
     "products": [
-      {"id": "prod_abc123", "quantity": 1},
-      {"id": "plan_xyz789", "trialDays": 14}
+      {"id": "one_off_product_Vr8kQdFhSrG4Y3DnfsdqH", "quantity": 1},
+      {"id": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP", "trialDays": 14}
     ],
     "redirectUrlSuccess": "https://example.com/success",
     "redirectUrlCanceled": "https://example.com/canceled"
@@ -625,8 +623,8 @@ $vatly->setApiKey('live_your_api_key_here');
 
 $checkout = $vatly->checkouts->create([
   'products' => [
-    ['id' => 'prod_abc123', 'quantity' => 1],
-    ['id' => 'plan_xyz789', 'trialDays' => 14],
+    ['id' => 'one_off_product_Vr8kQdFhSrG4Y3DnfsdqH', 'quantity' => 1],
+    ['id' => 'subscription_plan_Rk5pQrSvWm8NjLhYbUcP', 'trialDays' => 14],
   ],
   'redirectUrlSuccess' => 'https://example.com/success',
   'redirectUrlCanceled' => 'https://example.com/canceled',
@@ -638,24 +636,24 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
 
 ```json [Response]
 {
-  "id": "chk_abc123def456",
+  "id": "checkout_Bm7xNvPwKr3YjTgHcZaE",
   "resource": "checkout",
-  "merchantId": "mer_abc123",
+  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "orderId": null,
   "testmode": false,
   "redirectUrlSuccess": "https://example.com/success",
   "redirectUrlCanceled": "https://example.com/canceled",
-  "metadata": null,
+  "metadata": {},
   "status": "created",
-  "expiresAt": "2024-01-15T14:30:00Z",
+  "expiresAt": "2024-01-16T10:30:00Z",
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "checkoutUrl": {
-      "href": "https://pay.vatly.com/chk_abc123def456",
+      "href": "https://checkout.vatly.com/checkout_Bm7xNvPwKr3YjTgHcZaE",
       "type": "text/html"
     },
     "self": {
-      "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+      "href": "https://api.vatly.com/v1/checkouts/checkout_Bm7xNvPwKr3YjTgHcZaE",
       "type": "application/json"
     },
     "order": null
@@ -676,7 +674,7 @@ This endpoint allows you to retrieve a checkout by providing the checkout id. Re
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/checkouts/chk_abc123def456 \
+curl https://api.vatly.com/v1/checkouts/checkout_QdEpFhdSrG4Y3DnfsdqsH \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -684,33 +682,35 @@ curl https://api.vatly.com/v1/checkouts/chk_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$checkout = $vatly->checkouts->get('chk_abc123def456');
+$checkout = $vatly->checkouts->get('checkout_QdEpFhdSrG4Y3DnfsdqsH');
 ```
 
 ```json [Response]
 {
-  "id": "chk_abc123def456",
+  "id": "checkout_QdEpFhdSrG4Y3DnfsdqsH",
   "resource": "checkout",
-  "merchantId": "mer_abc123",
-  "orderId": "ord_xyz789",
+  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
+  "orderId": "order_Jk4pQrSvWm8NjLhYbUcP",
   "testmode": false,
   "redirectUrlSuccess": "https://example.com/success",
   "redirectUrlCanceled": "https://example.com/canceled",
-  "metadata": null,
+  "metadata": {
+    "campaign": "summer-sale"
+  },
   "status": "paid",
-  "expiresAt": "2024-01-15T14:30:00Z",
+  "expiresAt": "2024-01-16T10:30:00Z",
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "checkoutUrl": {
-      "href": "https://pay.vatly.com/chk_abc123def456",
+      "href": "https://checkout.vatly.com/checkout_QdEpFhdSrG4Y3DnfsdqsH",
       "type": "text/html"
     },
     "self": {
-      "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+      "href": "https://api.vatly.com/v1/checkouts/checkout_QdEpFhdSrG4Y3DnfsdqsH",
       "type": "application/json"
     },
     "order": {
-      "href": "https://api.vatly.com/v1/orders/ord_xyz789",
+      "href": "https://api.vatly.com/v1/orders/order_Jk4pQrSvWm8NjLhYbUcP",
       "type": "application/json"
     }
   }

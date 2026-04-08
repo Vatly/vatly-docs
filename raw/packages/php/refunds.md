@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Refund resource.
     
     <td>
       Unique identifier for the refund (<code>
-        ref_...
+        refund_...
       </code>
       
       ).
@@ -319,13 +319,13 @@ Create a refund for an order.
 ```php
 // Full refund
 $refund = $vatly->refunds->create([
-    'orderId' => 'ord_abc123',
+    'orderId' => 'order_Fp2kQrSvWm8NjLhYbUcP',
     'reason' => 'Customer requested refund',
 ]);
 
 // Partial refund
 $refund = $vatly->refunds->create([
-    'orderId' => 'ord_abc123',
+    'orderId' => 'order_Fp2kQrSvWm8NjLhYbUcP',
     'amount' => 1000,  // Refund €10.00
 ]);
 
@@ -342,7 +342,7 @@ echo $refund->status;
 Retrieve a refund by its ID.
 
 ```php
-$refund = $vatly->refunds->get('ref_abc123');
+$refund = $vatly->refunds->get('refund_Mn6xBtPvKw2RjTgYcZaE');
 
 echo $refund->status;
 echo $refund->amount / 100 . ' ' . $refund->currency;

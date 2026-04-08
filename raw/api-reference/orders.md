@@ -41,7 +41,7 @@ The order model contains all the information about your orders, including the or
     
     <td>
       Unique identifier for the order (starts with <code>
-        ord_
+        order_
       </code>
       
       ).
@@ -191,6 +191,10 @@ The order model contains all the information about your orders, including the or
     
     <td>
       The current status of the order. Can be <code>
+        created
+      </code>
+      
+      , <code>
         pending
       </code>
       
@@ -198,8 +202,12 @@ The order model contains all the information about your orders, including the or
         paid
       </code>
       
+      , <code>
+        canceled
+      </code>
+      
       , or <code>
-        failed
+        expired
       </code>
       
       .
@@ -277,12 +285,32 @@ The order model contains all the information about your orders, including the or
     
     <td>
       <code>
-        Money
+        array
       </code>
     </td>
     
     <td>
-      Total tax amount.
+      Tax breakdown by rate. Each item contains a <code>
+        taxRate
+      </code>
+      
+       object (<code>
+        name
+      </code>
+      
+      , <code>
+        percentage
+      </code>
+      
+      , <code>
+        taxablePercentage
+      </code>
+      
+      ) and an <code>
+        amount
+      </code>
+      
+       Money object.
     </td>
   </tr>
   
@@ -416,8 +444,12 @@ The order model contains all the information about your orders, including the or
         self
       </code>
       
-       and <code>
+      , <code>
         customer
+      </code>
+      
+      , and optionally <code>
+        customerInvoice
       </code>
       
        links.
@@ -461,7 +493,7 @@ The order model contains all the information about your orders, including the or
     
     <td>
       Unique identifier for this line item (starts with <code>
-        oli_
+        order_item_
       </code>
       
       ).
@@ -589,12 +621,20 @@ The order model contains all the information about your orders, including the or
     
     <td>
       <code>
-        Money
+        array
       </code>
     </td>
     
     <td>
-      Tax amount for this line.
+      Tax breakdown by rate for this line. Each item contains a <code>
+        taxRate
+      </code>
+      
+       object and an <code>
+        amount
+      </code>
+      
+       Money object.
     </td>
   </tr>
 </tbody>
@@ -703,100 +743,115 @@ $orders = $vatly->orders->page();
 {
   "data": [
     {
-      "id": "ord_abc123def456",
+      "id": "order_Hn5xWqVfKm8RjTgYbUcP",
       "resource": "order",
-      "merchantId": "mer_abc123",
-      "customerId": "cus_xyz789",
+      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
+      "customerId": "customer_Xk9pQrSvWm4NjLhYbUcP",
       "testmode": false,
-      "metadata": null,
+      "metadata": {},
       "paymentMethod": "ideal",
       "status": "paid",
       "invoiceNumber": "INV-2024-0001",
       "total": {
-        "value": "120.99",
+        "value": "35.09",
         "currency": "EUR"
       },
       "subtotal": {
-        "value": "100.00",
+        "value": "29.00",
         "currency": "EUR"
       },
-      "taxSummary": {
-        "value": "20.99",
-        "currency": "EUR"
-      },
-      "lines": [
+      "taxSummary": [
         {
-          "id": "oli_abc123",
-          "resource": "orderline",
-          "description": "Pro Monthly Subscription",
-          "quantity": 1,
-          "basePrice": {
-            "value": "100.00",
-            "currency": "EUR"
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
           },
-          "total": {
-            "value": "120.99",
-            "currency": "EUR"
-          },
-          "subtotal": {
-            "value": "100.00",
-            "currency": "EUR"
-          },
-          "taxes": {
-            "value": "20.99",
+          "amount": {
+            "value": "6.09",
             "currency": "EUR"
           }
         }
       ],
+      "lines": [
+        {
+          "id": "order_item_Mn6xBtPvKw2RjTgYcZaE",
+          "resource": "orderline",
+          "description": "Pro Monthly Subscription",
+          "quantity": 1,
+          "basePrice": {
+            "value": "29.00",
+            "currency": "EUR"
+          },
+          "total": {
+            "value": "35.09",
+            "currency": "EUR"
+          },
+          "subtotal": {
+            "value": "29.00",
+            "currency": "EUR"
+          },
+          "taxes": [
+            {
+              "taxRate": {
+                "name": "VAT",
+                "percentage": 21,
+                "taxablePercentage": 100
+              },
+              "amount": {
+                "value": "6.09",
+                "currency": "EUR"
+              }
+            }
+          ]
+        }
+      ],
       "merchantDetails": {
-        "fullName": null,
-        "companyName": "Acme Corp",
+        "fullName": "Vatly B.V.",
+        "companyName": "Vatly",
         "vatNumber": "NL123456789B01",
-        "streetAndNumber": "123 Business Ave",
+        "streetAndNumber": "Keizersgracht 123",
         "streetAdditional": null,
         "city": "Amsterdam",
-        "region": "North Holland",
-        "postalCode": "1012 AB",
+        "region": null,
+        "postalCode": "1015 CJ",
         "country": "NL",
-        "email": "billing@acme.com"
+        "email": "billing@vatly.com"
       },
       "customerDetails": {
         "fullName": "John Doe",
-        "companyName": null,
+        "companyName": "Acme Corp",
         "vatNumber": null,
-        "streetAndNumber": "456 Customer St",
-        "streetAdditional": "Apt 789",
-        "city": "Rotterdam",
-        "region": "South Holland",
-        "postalCode": "3012 CD",
-        "country": "NL",
-        "email": "john@example.com"
+        "streetAndNumber": "123 Main Street",
+        "streetAdditional": null,
+        "city": "Berlin",
+        "region": null,
+        "postalCode": "10115",
+        "country": "DE",
+        "email": "john@acme.com"
       },
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/orders/ord_abc123def456",
+          "href": "https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP",
           "type": "application/json"
         },
         "customer": {
-          "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+          "href": "https://api.vatly.com/v1/customers/customer_Xk9pQrSvWm4NjLhYbUcP",
           "type": "application/json"
         }
       }
     }
   ],
+  "count": 1,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/orders?limit=10",
+      "href": "https://api.vatly.com/v1/orders",
       "type": "application/json"
     },
-    "next": {
-      "href": "https://api.vatly.com/v1/orders?startingAfter=ord_abc123def456&limit=10",
-      "type": "application/json"
-    },
+    "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -853,7 +908,7 @@ This endpoint allows you to retrieve a specific order by its ID.
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/orders/ord_abc123def456 \
+curl https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -861,89 +916,111 @@ curl https://api.vatly.com/v1/orders/ord_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$order = $vatly->orders->get('ord_abc123def456');
+$order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
 ```
 
 ```json [Response]
 {
-  "id": "ord_abc123def456",
+  "id": "order_Hn5xWqVfKm8RjTgYbUcP",
   "resource": "order",
-  "merchantId": "mer_abc123",
-  "customerId": "cus_xyz789",
+  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
+  "customerId": "customer_Xk9pQrSvWm4NjLhYbUcP",
   "testmode": false,
-  "metadata": null,
+  "metadata": {},
   "paymentMethod": "ideal",
   "status": "paid",
   "invoiceNumber": "INV-2024-0001",
   "total": {
-    "value": "120.99",
+    "value": "35.09",
     "currency": "EUR"
   },
   "subtotal": {
-    "value": "100.00",
+    "value": "29.00",
     "currency": "EUR"
   },
-  "taxSummary": {
-    "value": "20.99",
-    "currency": "EUR"
-  },
-  "lines": [
+  "taxSummary": [
     {
-      "id": "oli_abc123",
-      "resource": "orderline",
-      "description": "Pro Monthly Subscription",
-      "quantity": 1,
-      "basePrice": {
-        "value": "100.00",
-        "currency": "EUR"
+      "taxRate": {
+        "name": "VAT",
+        "percentage": 21,
+        "taxablePercentage": 100
       },
-      "total": {
-        "value": "120.99",
-        "currency": "EUR"
-      },
-      "subtotal": {
-        "value": "100.00",
-        "currency": "EUR"
-      },
-      "taxes": {
-        "value": "20.99",
+      "amount": {
+        "value": "6.09",
         "currency": "EUR"
       }
     }
   ],
+  "lines": [
+    {
+      "id": "order_item_Jk4pQrSvWm8NjLhYbUcP",
+      "resource": "orderline",
+      "description": "Pro Monthly Subscription",
+      "quantity": 1,
+      "basePrice": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
+      "total": {
+        "value": "35.09",
+        "currency": "EUR"
+      },
+      "subtotal": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
+      "taxes": [
+        {
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
+          },
+          "amount": {
+            "value": "6.09",
+            "currency": "EUR"
+          }
+        }
+      ]
+    }
+  ],
   "merchantDetails": {
-    "fullName": null,
-    "companyName": "Acme Corp",
+    "fullName": "Vatly B.V.",
+    "companyName": "Vatly",
     "vatNumber": "NL123456789B01",
-    "streetAndNumber": "123 Business Ave",
+    "streetAndNumber": "Keizersgracht 123",
     "streetAdditional": null,
     "city": "Amsterdam",
-    "region": "North Holland",
-    "postalCode": "1012 AB",
+    "region": null,
+    "postalCode": "1015 CJ",
     "country": "NL",
-    "email": "billing@acme.com"
+    "email": "billing@vatly.com"
   },
   "customerDetails": {
     "fullName": "John Doe",
-    "companyName": null,
+    "companyName": "Acme Corp",
     "vatNumber": null,
-    "streetAndNumber": "456 Customer St",
-    "streetAdditional": "Apt 789",
-    "city": "Rotterdam",
-    "region": "South Holland",
-    "postalCode": "3012 CD",
-    "country": "NL",
-    "email": "john@example.com"
+    "streetAndNumber": "123 Main Street",
+    "streetAdditional": null,
+    "city": "Berlin",
+    "region": null,
+    "postalCode": "10115",
+    "country": "DE",
+    "email": "john@acme.com"
   },
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/orders/ord_abc123def456",
+      "href": "https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP",
       "type": "application/json"
     },
     "customer": {
-      "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+      "href": "https://api.vatly.com/v1/customers/customer_Xk9pQrSvWm4NjLhYbUcP",
       "type": "application/json"
+    },
+    "customerInvoice": {
+      "href": "https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP",
+      "type": "text/html"
     }
   }
 }
@@ -1002,7 +1079,7 @@ This endpoint allows you to request a signed link that customers can use to upda
 <code-group>
 
 ```bash [cURL]
-curl -X POST https://api.vatly.com/v1/orders/ord_abc123def456/request-address-update-link \
+curl -X POST https://api.vatly.com/v1/orders/order_Hn5xWqVfKm8RjTgYbUcP/request-address-update-link \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -1010,12 +1087,12 @@ curl -X POST https://api.vatly.com/v1/orders/ord_abc123def456/request-address-up
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$link = $vatly->orders->requestAddressUpdateLink('ord_abc123def456');
+$link = $vatly->orders->requestAddressUpdateLink('order_Hn5xWqVfKm8RjTgYbUcP');
 ```
 
 ```json [Response]
 {
-  "href": "https://vatly.com/invoices/ord_abc123def456/edit?signature=abc123...",
+  "href": "https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP/edit?signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "type": "text/html"
 }
 ```

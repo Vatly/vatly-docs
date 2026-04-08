@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Order resource.
     
     <td>
       Unique identifier for the order (<code>
-        ord_...
+        order_...
       </code>
       
       ).
@@ -265,7 +265,7 @@ Below you'll find all properties for the Vatly Order resource.
 Retrieve an order by its ID.
 
 ```php
-$order = $vatly->orders->get('ord_abc123');
+$order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
 
 echo $order->status;
 echo $order->amount / 100 . ' ' . $order->currency;
@@ -368,7 +368,7 @@ foreach ($orders as $order) {
 
 // Filter by customer
 $orders = $vatly->orders->list([
-    'customerId' => 'cus_abc123',
+    'customerId' => 'customer_Xk9pQrSvWm4NjLhYbUcP',
 ]);
 ```
 

@@ -41,7 +41,7 @@ Below you'll find all properties for the Vatly Customer API resource.
     
     <td>
       Unique identifier for the customer (starts with <code>
-        cus_
+        customer_
       </code>
       
       ).
@@ -269,32 +269,45 @@ $customers = $vatly->customers->page();
 {
   "data": [
     {
-      "id": "cus_abc123def456",
+      "id": "customer_7kBmRtPvXw2NjLhYcZaE",
       "resource": "customer",
       "testmode": false,
-      "email": "john@example.com",
+      "email": "john.doe@example.com",
       "createdAt": "2024-01-15T10:30:00Z",
+      "metadata": {
+        "userId": "user_Qp8kNvBxKw7RjTgYcZaE"
+      },
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE",
+          "type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "customer_Lp3mNvBxKw7RjTgYcZaE",
+      "resource": "customer",
+      "testmode": false,
+      "email": "jane.smith@acme.com",
+      "createdAt": "2024-01-10T08:15:00Z",
       "metadata": {},
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/customers/cus_abc123def456",
+          "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
           "type": "application/json"
         }
       }
     }
   ],
+  "count": 2,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/customers?limit=10",
+      "href": "https://api.vatly.com/v1/customers",
       "type": "application/json"
     },
-    "next": {
-      "href": "https://api.vatly.com/v1/customers?startingAfter=cus_abc123def456&limit=10",
-      "type": "application/json"
-    },
+    "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -307,6 +320,8 @@ $customers = $vatly->customers->page();
 `POST /v1/customers`
 
 This endpoint allows you to add a new customer to Vatly. To add a customer, you must provide their email address.
+
+Customers are uniquely identified by email within each testmode. Creating a customer with an email that already exists will return a validation error.
 
 ### Required attributes
 
@@ -342,7 +357,7 @@ This endpoint allows you to add a new customer to Vatly. To add a customer, you 
     </td>
     
     <td>
-      The email address for the customer.
+      The email address for the customer. Must be unique within the merchant's account for the given testmode.
     </td>
   </tr>
 </tbody>
@@ -394,7 +409,7 @@ This endpoint allows you to add a new customer to Vatly. To add a customer, you 
 curl https://api.vatly.com/v1/customers \
   -H "Authorization: Bearer live_your_api_key_here" \
   -H "Content-Type: application/json" \
-  -d '{"email": "john@example.com"}'
+  -d '{"email": "customer@example.com", "metadata": {"userId": "user_Qp8kNvBxKw7RjTgYcZaE"}}'
 ```
 
 ```php [PHP]
@@ -402,21 +417,26 @@ $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
 $vatly->customers->create([
-  'email' => 'john@example.com',
+  'email' => 'customer@example.com',
+  'metadata' => [
+    'userId' => 'user_Qp8kNvBxKw7RjTgYcZaE',
+  ],
 ]);
 ```
 
 ```json [Response]
 {
-  "id": "cus_abc123def456",
+  "id": "customer_7kBmRtPvXw2NjLhYcZaE",
   "resource": "customer",
   "testmode": false,
-  "email": "john@example.com",
+  "email": "customer@example.com",
   "createdAt": "2024-01-15T10:30:00Z",
-  "metadata": {},
+  "metadata": {
+    "userId": "user_Qp8kNvBxKw7RjTgYcZaE"
+  },
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/customers/cus_abc123def456",
+      "href": "https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE",
       "type": "application/json"
     }
   }
@@ -436,7 +456,7 @@ This endpoint allows you to retrieve a customer by providing their Vatly id. Ref
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/customers/cus_abc123def456 \
+curl https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -444,20 +464,22 @@ curl https://api.vatly.com/v1/customers/cus_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$vatly->customers->get('cus_abc123def456');
+$vatly->customers->get('customer_7kBmRtPvXw2NjLhYcZaE');
 ```
 
 ```json [Response]
 {
-  "id": "cus_abc123def456",
+  "id": "customer_7kBmRtPvXw2NjLhYcZaE",
   "resource": "customer",
   "testmode": false,
-  "email": "john@example.com",
+  "email": "john.doe@example.com",
   "createdAt": "2024-01-15T10:30:00Z",
-  "metadata": {},
+  "metadata": {
+    "userId": "user_Qp8kNvBxKw7RjTgYcZaE"
+  },
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/customers/cus_abc123def456",
+      "href": "https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE",
       "type": "application/json"
     }
   }

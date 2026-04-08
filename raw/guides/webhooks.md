@@ -23,7 +23,7 @@ When your app receives a webhook request from Vatly, check the `type` attribute 
   "id": "whk_a056V9ZCh6X9XZlr",
   "type": "subscription.updated",
   "payload": {
-    "id": "sub_WAz8eIbvDR60rouK"
+    "id": "subscription_WAz8eIbvDR60rouK"
   }
 }
 ```
@@ -197,24 +197,24 @@ To make integrating Vatly as smooth as possible, you can inspect a detailed webh
   "id": "whk_a056V9ZCh6X9XZlr",
   "type": "checkout.paid",
   "payload": {
-    "id": "chk_abc123def456",
+    "id": "checkout_Fp2kQrSvWm8NjLhYbUcP",
     "resource": "checkout",
-    "merchantId": "mer_abc123",
-    "orderId": "ord_xyz789",
+    "merchantId": "merchant_Bm7xNvPwKr3YjTgHcZaE",
+    "orderId": "order_Wt5mNvBxKw7YcZaEjLhR",
     "testmode": false,
     "status": "paid",
     "createdAt": "2024-01-15T10:30:00Z",
     "links": {
       "checkoutUrl": {
-        "href": "https://pay.vatly.com/chk_abc123def456",
+        "href": "https://checkout.vatly.com/checkout_Fp2kQrSvWm8NjLhYbUcP",
         "type": "text/html"
       },
       "self": {
-        "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+        "href": "https://api.vatly.com/v1/checkouts/checkout_Fp2kQrSvWm8NjLhYbUcP",
         "type": "application/json"
       },
       "order": {
-        "href": "https://api.vatly.com/v1/orders/ord_xyz789",
+        "href": "https://api.vatly.com/v1/orders/order_Wt5mNvBxKw7YcZaEjLhR",
         "type": "application/json"
       }
     }
@@ -229,9 +229,9 @@ To make integrating Vatly as smooth as possible, you can inspect a detailed webh
   "id": "whk_b167W0AChY7Z0Amr",
   "type": "subscription.updated",
   "payload": {
-    "id": "sub_abc123def456",
+    "id": "subscription_QdEpFhdSrG4Y3DnfsdqsH",
     "resource": "subscription",
-    "customerId": "cus_xyz789",
+    "customerId": "customer_Bm7xNvPwKr3YjTgHcZaE",
     "testmode": false,
     "name": "Premium Plan",
     "status": "active",
@@ -247,11 +247,11 @@ To make integrating Vatly as smooth as possible, you can inspect a detailed webh
     "nextRenewalAt": "2024-02-15T10:30:00Z",
     "links": {
       "self": {
-        "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+        "href": "https://api.vatly.com/v1/subscriptions/subscription_QdEpFhdSrG4Y3DnfsdqsH",
         "type": "application/json"
       },
       "customer": {
-        "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+        "href": "https://api.vatly.com/v1/customers/customer_Bm7xNvPwKr3YjTgHcZaE",
         "type": "application/json"
       }
     }

@@ -41,7 +41,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       Unique identifier for the subscription (starts with <code>
-        sub_
+        subscription_
       </code>
       
       ).
@@ -591,62 +591,103 @@ $subscriptions = $vatly->subscriptions->page();
 {
   "data": [
     {
-      "id": "sub_abc123def456",
+      "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
       "resource": "subscription",
-      "customerId": "cus_xyz789",
+      "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
       "testmode": false,
-      "name": "Premium Plan",
-      "description": "Access to all premium features",
+      "name": "Pro Monthly",
+      "description": "Full access to all Pro features",
       "billingAddress": {
         "fullName": "John Doe",
-        "companyName": null,
+        "companyName": "Acme Corp",
         "vatNumber": null,
-        "streetAndNumber": "123 Main St",
-        "streetAdditional": "Suite 123",
-        "city": "Anytown",
-        "region": "CA",
-        "postalCode": "12345",
-        "country": "US"
+        "streetAndNumber": "123 Main Street",
+        "streetAdditional": null,
+        "city": "Berlin",
+        "region": null,
+        "postalCode": "10115",
+        "country": "DE"
       },
       "basePrice": {
-        "value": "99.99",
+        "value": "29.00",
         "currency": "EUR"
       },
       "quantity": 1,
       "interval": "month",
       "intervalCount": 1,
       "status": "active",
-      "startedAt": "2023-01-01T00:00:00Z",
+      "startedAt": "2024-01-15T10:30:00Z",
       "endedAt": null,
       "cancelledAt": null,
-      "renewedAt": "2023-06-01T00:00:00Z",
-      "renewedUntil": "2023-07-01T00:00:00Z",
-      "nextRenewalAt": "2023-07-01T00:00:00Z",
+      "renewedAt": "2024-02-15T10:30:00Z",
+      "renewedUntil": "2024-03-15T10:30:00Z",
+      "nextRenewalAt": "2024-03-15T10:30:00Z",
       "trialUntil": null,
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+          "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
           "type": "application/json"
         },
         "customer": {
-          "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+          "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
+          "type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "subscription_Wt5mNvBxKw7YcZaEjLhR",
+      "resource": "subscription",
+      "customerId": "customer_Mn6xBtPvKw2RjTgYcZaE",
+      "testmode": false,
+      "name": "Enterprise Yearly",
+      "description": "Enterprise features with priority support",
+      "billingAddress": {
+        "fullName": "Jane Smith",
+        "companyName": "TechCorp Ltd",
+        "vatNumber": "GB123456789",
+        "streetAndNumber": "456 Tech Lane",
+        "streetAdditional": null,
+        "city": "London",
+        "region": null,
+        "postalCode": "EC1A 1BB",
+        "country": "GB"
+      },
+      "basePrice": {
+        "value": "990.00",
+        "currency": "EUR"
+      },
+      "quantity": 5,
+      "interval": "year",
+      "intervalCount": 1,
+      "status": "active",
+      "startedAt": "2024-01-01T00:00:00Z",
+      "endedAt": null,
+      "cancelledAt": null,
+      "renewedAt": "2024-01-01T00:00:00Z",
+      "renewedUntil": "2025-01-01T00:00:00Z",
+      "nextRenewalAt": "2025-01-01T00:00:00Z",
+      "trialUntil": null,
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/subscriptions/subscription_Wt5mNvBxKw7YcZaEjLhR",
+          "type": "application/json"
+        },
+        "customer": {
+          "href": "https://api.vatly.com/v1/customers/customer_Mn6xBtPvKw2RjTgYcZaE",
           "type": "application/json"
         }
       }
     }
   ],
+  "count": 2,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/subscriptions?limit=10",
+      "href": "https://api.vatly.com/v1/subscriptions",
       "type": "application/json"
     },
-    "next": {
-      "href": "https://api.vatly.com/v1/subscriptions?startingAfter=sub_abc123def456&limit=10",
-      "type": "application/json"
-    },
+    "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -703,7 +744,7 @@ This endpoint allows you to retrieve a specific subscription by its ID.
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
+curl https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -711,50 +752,50 @@ curl https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$subscription = $vatly->subscriptions->get('sub_abc123def456');
+$subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
 ```
 
 ```json [Response]
 {
-  "id": "sub_abc123def456",
+  "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
-  "customerId": "cus_xyz789",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
-  "name": "Premium Plan",
-  "description": "Access to all premium features",
+  "name": "Pro Monthly",
+  "description": "Full access to all Pro features",
   "billingAddress": {
     "fullName": "John Doe",
-    "companyName": null,
+    "companyName": "Acme Corp",
     "vatNumber": null,
-    "streetAndNumber": "123 Main St",
-    "streetAdditional": "Suite 123",
-    "city": "Anytown",
-    "region": "CA",
-    "postalCode": "12345",
-    "country": "US"
+    "streetAndNumber": "123 Main Street",
+    "streetAdditional": null,
+    "city": "Berlin",
+    "region": null,
+    "postalCode": "10115",
+    "country": "DE"
   },
   "basePrice": {
-    "value": "99.99",
+    "value": "29.00",
     "currency": "EUR"
   },
   "quantity": 1,
   "interval": "month",
   "intervalCount": 1,
   "status": "active",
-  "startedAt": "2023-01-01T00:00:00Z",
+  "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "cancelledAt": null,
-  "renewedAt": "2023-06-01T00:00:00Z",
-  "renewedUntil": "2023-07-01T00:00:00Z",
-  "nextRenewalAt": "2023-07-01T00:00:00Z",
+  "renewedAt": "2024-02-15T10:30:00Z",
+  "renewedUntil": "2024-03-15T10:30:00Z",
+  "nextRenewalAt": "2024-03-15T10:30:00Z",
   "trialUntil": null,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+      "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     },
     "customer": {
-      "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+      "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     }
   }
@@ -868,7 +909,7 @@ This endpoint allows you to retrieve a paginated list of all subscriptions for a
 <code-group>
 
 ```bash [cURL]
-curl -G https://api.vatly.com/v1/customers/cus_xyz789/subscriptions \
+curl -G https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE/subscriptions \
   -H "Authorization: Bearer live_your_api_key_here" \
   -d limit=10
 ```
@@ -877,36 +918,66 @@ curl -G https://api.vatly.com/v1/customers/cus_xyz789/subscriptions \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$subscriptions = $vatly->customers->subscriptions('cus_xyz789')->page();
+$subscriptions = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE')->page();
 ```
 
 ```json [Response]
 {
   "data": [
     {
-      "id": "sub_abc123def456",
+      "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
       "resource": "subscription",
-      "customerId": "cus_xyz789",
+      "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
       "testmode": false,
-      "name": "Premium Plan",
-      "description": "Access to all premium features",
+      "name": "Pro Monthly",
+      "description": "Full access to all Pro features",
+      "billingAddress": {
+        "fullName": "John Doe",
+        "companyName": "Acme Corp",
+        "vatNumber": null,
+        "streetAndNumber": "123 Main Street",
+        "streetAdditional": null,
+        "city": "Berlin",
+        "region": null,
+        "postalCode": "10115",
+        "country": "DE"
+      },
+      "basePrice": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
+      "quantity": 1,
+      "interval": "month",
+      "intervalCount": 1,
       "status": "active",
-      "startedAt": "2023-01-01T00:00:00Z",
-      "nextRenewalAt": "2023-07-01T00:00:00Z"
+      "startedAt": "2024-01-15T10:30:00Z",
+      "endedAt": null,
+      "cancelledAt": null,
+      "renewedAt": "2024-02-15T10:30:00Z",
+      "renewedUntil": "2024-03-15T10:30:00Z",
+      "nextRenewalAt": "2024-03-15T10:30:00Z",
+      "trialUntil": null,
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
+          "type": "application/json"
+        },
+        "customer": {
+          "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
+          "type": "application/json"
+        }
+      }
     }
   ],
+  "count": 1,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/customers/cus_xyz789/subscriptions?limit=10",
+      "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE/subscriptions",
       "type": "application/json"
     },
-    "next": {
-      "href": "https://api.vatly.com/v1/customers/cus_xyz789/subscriptions?startingAfter=sub_abc123def456&limit=10",
-      "type": "application/json"
-    },
+    "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -981,7 +1052,7 @@ This endpoint allows you to retrieve a specific subscription for a specific cust
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/customers/cus_xyz789/subscriptions/sub_abc123def456 \
+curl https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -989,50 +1060,50 @@ curl https://api.vatly.com/v1/customers/cus_xyz789/subscriptions/sub_abc123def45
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$subscription = $vatly->customers->subscriptions('cus_xyz789')->get('sub_abc123def456');
+$subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE')->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
 ```
 
 ```json [Response]
 {
-  "id": "sub_abc123def456",
+  "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
-  "customerId": "cus_xyz789",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
-  "name": "Premium Plan",
-  "description": "Access to all premium features",
+  "name": "Pro Monthly",
+  "description": "Full access to all Pro features",
   "billingAddress": {
     "fullName": "John Doe",
-    "companyName": null,
+    "companyName": "Acme Corp",
     "vatNumber": null,
-    "streetAndNumber": "123 Main St",
-    "streetAdditional": "Suite 123",
-    "city": "Anytown",
-    "region": "CA",
-    "postalCode": "12345",
-    "country": "US"
+    "streetAndNumber": "123 Main Street",
+    "streetAdditional": null,
+    "city": "Berlin",
+    "region": null,
+    "postalCode": "10115",
+    "country": "DE"
   },
   "basePrice": {
-    "value": "99.99",
+    "value": "29.00",
     "currency": "EUR"
   },
   "quantity": 1,
   "interval": "month",
   "intervalCount": 1,
   "status": "active",
-  "startedAt": "2023-01-01T00:00:00Z",
+  "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "cancelledAt": null,
-  "renewedAt": "2023-06-01T00:00:00Z",
-  "renewedUntil": "2023-07-01T00:00:00Z",
-  "nextRenewalAt": "2023-07-01T00:00:00Z",
+  "renewedAt": "2024-02-15T10:30:00Z",
+  "renewedUntil": "2024-03-15T10:30:00Z",
+  "nextRenewalAt": "2024-03-15T10:30:00Z",
   "trialUntil": null,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+      "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     },
     "customer": {
-      "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+      "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     }
   }
@@ -1086,7 +1157,7 @@ At least one of `subscriptionPlanId` or `quantity` must be provided.
     
     <td>
       The ID of the subscription plan to update to (starts with <code>
-        plan_
+        subscription_plan_
       </code>
       
       ). Must match the testmode of the current subscription.
@@ -1234,12 +1305,11 @@ At least one of `subscriptionPlanId` or `quantity` must be provided.
 <code-group>
 
 ```bash [cURL]
-curl -X PATCH https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
+curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
   -H "Authorization: Bearer live_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
-    "subscriptionPlanId": "plan_yearly123",
-    "quantity": 3,
+    "subscriptionPlanId": "subscription_plan_Wt5mNvBxKw7YcZaEjLhR",
     "prorate": true,
     "applyImmediately": true
   }'
@@ -1249,9 +1319,8 @@ curl -X PATCH https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$subscription = $vatly->subscriptions->update('sub_abc123def456', [
-    'subscriptionPlanId' => 'plan_yearly123',
-    'quantity' => 3,
+$subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE', [
+    'subscriptionPlanId' => 'subscription_plan_Wt5mNvBxKw7YcZaEjLhR',
     'prorate' => true,
     'applyImmediately' => true,
 ]);
@@ -1259,45 +1328,45 @@ $subscription = $vatly->subscriptions->update('sub_abc123def456', [
 
 ```json [Response]
 {
-  "id": "sub_abc123def456",
+  "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
-  "customerId": "cus_xyz789",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
-  "name": "Premium Yearly",
-  "description": "Access to all premium features, billed annually",
+  "name": "Pro Yearly",
+  "description": "Full access to all Pro features, billed yearly",
   "billingAddress": {
     "fullName": "John Doe",
-    "companyName": null,
+    "companyName": "Acme Corp",
     "vatNumber": null,
-    "streetAndNumber": "123 Main St",
-    "streetAdditional": "Suite 123",
-    "city": "Anytown",
-    "region": "CA",
-    "postalCode": "12345",
-    "country": "US"
+    "streetAndNumber": "123 Main Street",
+    "streetAdditional": null,
+    "city": "Berlin",
+    "region": null,
+    "postalCode": "10115",
+    "country": "DE"
   },
   "basePrice": {
-    "value": "999.00",
+    "value": "290.00",
     "currency": "EUR"
   },
-  "quantity": 3,
+  "quantity": 1,
   "interval": "year",
   "intervalCount": 1,
   "status": "active",
-  "startedAt": "2023-01-01T00:00:00Z",
+  "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "cancelledAt": null,
-  "renewedAt": "2023-06-01T00:00:00Z",
-  "renewedUntil": "2024-06-01T00:00:00Z",
-  "nextRenewalAt": "2024-06-01T00:00:00Z",
+  "renewedAt": "2024-02-15T10:30:00Z",
+  "renewedUntil": "2025-02-15T10:30:00Z",
+  "nextRenewalAt": "2025-02-15T10:30:00Z",
   "trialUntil": null,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+      "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     },
     "customer": {
-      "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+      "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     }
   }
@@ -1415,17 +1484,15 @@ This endpoint initiates a hosted flow for updating subscription billing details.
 <code-group>
 
 ```bash [cURL]
-curl -X PATCH https://api.vatly.com/v1/subscriptions/sub_abc123def456/update-billing \
+curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/update-billing \
   -H "Authorization: Bearer live_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
     "redirectUrlSuccess": "https://example.com/billing-updated",
-    "redirectUrlCanceled": "https://example.com/billing-canceled",
+    "redirectUrlCanceled": "https://example.com/account/billing",
     "billingAddress": {
-      "country": "NL",
-      "streetAndNumber": "456 New St",
-      "city": "Amsterdam",
-      "postalCode": "1012AB"
+      "companyName": "Acme Corp",
+      "vatNumber": "DE123456789"
     }
   }'
 ```
@@ -1434,14 +1501,12 @@ curl -X PATCH https://api.vatly.com/v1/subscriptions/sub_abc123def456/update-bil
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$response = $vatly->subscriptions->updateBilling('sub_abc123def456', [
+$response = $vatly->subscriptions->updateBilling('subscription_Lp3mNvBxKw7RjTgYcZaE', [
     'redirectUrlSuccess' => 'https://example.com/billing-updated',
-    'redirectUrlCanceled' => 'https://example.com/billing-canceled',
+    'redirectUrlCanceled' => 'https://example.com/account/billing',
     'billingAddress' => [
-        'country' => 'NL',
-        'streetAndNumber' => '456 New St',
-        'city' => 'Amsterdam',
-        'postalCode' => '1012AB',
+        'companyName' => 'Acme Corp',
+        'vatNumber' => 'DE123456789',
     ],
 ]);
 
@@ -1451,7 +1516,7 @@ header('Location: ' . $response->href, true, 303);
 
 ```json [Response]
 {
-  "href": "https://vatly.com/subscriptions/sub_abc123def456/billing?token=xyz...",
+  "href": "https://vatly.com/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/billing?token=xyz...",
   "type": "text/html"
 }
 ```
@@ -1513,12 +1578,12 @@ This endpoint allows you to cancel a subscription. By default, the subscription 
 <code-group>
 
 ```bash [cURL]
-curl -X DELETE https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
+curl -X DELETE https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
 ```bash [cURL (immediate)]
-curl -X DELETE "https://api.vatly.com/v1/subscriptions/sub_abc123def456?immediately=true" \
+curl -X DELETE "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE?immediately=true" \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -1526,7 +1591,7 @@ curl -X DELETE "https://api.vatly.com/v1/subscriptions/sub_abc123def456?immediat
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$vatly->subscriptions->cancel('sub_abc123def456');
+$vatly->subscriptions->cancel('subscription_Lp3mNvBxKw7RjTgYcZaE');
 ```
 
 </code-group>

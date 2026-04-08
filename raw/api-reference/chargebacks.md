@@ -86,7 +86,11 @@ Chargebacks are created automatically when a payment provider initiates a disput
     </td>
     
     <td>
-      ID of the merchant.
+      ID of the merchant (starts with <code>
+        merchant_
+      </code>
+      
+      ).
     </td>
   </tr>
   
@@ -208,7 +212,11 @@ Chargebacks are created automatically when a payment provider initiates a disput
     </td>
     
     <td>
-      ID of the original order that was charged back.
+      ID of the original order that was charged back (starts with <code>
+        order_
+      </code>
+      
+      ).
     </td>
   </tr>
   
@@ -226,7 +234,11 @@ Chargebacks are created automatically when a payment provider initiates a disput
     </td>
     
     <td>
-      ID of the credit note order created for this chargeback. Only present after the chargeback is processed.
+      ID of the credit note order created for this chargeback (starts with <code>
+        order_
+      </code>
+      
+      ). Only present after the chargeback is processed.
     </td>
   </tr>
   
@@ -383,47 +395,47 @@ $chargebacks = $vatly->chargebacks->page();
 {
   "data": [
     {
-      "id": "chargeback_abc123def456",
+      "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
       "resource": "chargeback",
-      "merchantId": "mer_abc123",
+      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
       "testmode": false,
       "amount": {
-        "value": "99.99",
+        "value": "35.09",
         "currency": "EUR"
       },
       "settlementAmount": {
-        "value": "114.99",
+        "value": "35.09",
         "currency": "EUR"
       },
       "reason": "fraud",
-      "originalOrderId": "ord_original123",
-      "orderId": "ord_chargeback123",
+      "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
+      "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
+          "href": "https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE",
           "type": "application/json"
         },
         "originalOrder": {
-          "href": "https://api.vatly.com/v1/orders/ord_original123",
+          "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
           "type": "application/json"
         },
         "order": {
-          "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+          "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
           "type": "application/json"
         }
       }
     }
   ],
+  "count": 1,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/chargebacks?limit=10",
+      "href": "https://api.vatly.com/v1/chargebacks",
       "type": "application/json"
     },
     "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -480,7 +492,7 @@ This endpoint allows you to retrieve a specific chargeback by its ID.
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/chargebacks/chargeback_abc123def456 \
+curl https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -488,38 +500,38 @@ curl https://api.vatly.com/v1/chargebacks/chargeback_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$chargeback = $vatly->chargebacks->get('chargeback_abc123def456');
+$chargeback = $vatly->chargebacks->get('chargeback_Mn6xBtPvKw2RjTgYcZaE');
 ```
 
 ```json [Response]
 {
-  "id": "chargeback_abc123def456",
+  "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "chargeback",
-  "merchantId": "mer_abc123",
+  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "testmode": false,
   "amount": {
-    "value": "99.99",
+    "value": "35.09",
     "currency": "EUR"
   },
   "settlementAmount": {
-    "value": "114.99",
+    "value": "35.09",
     "currency": "EUR"
   },
   "reason": "fraud",
-  "originalOrderId": "ord_original123",
-  "orderId": "ord_chargeback123",
-  "createdAt": "2024-01-15T10:30:00Z",
+  "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
+  "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",
+  "createdAt": "2024-01-25T16:45:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
+      "href": "https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE",
       "type": "application/json"
     },
     "originalOrder": {
-      "href": "https://api.vatly.com/v1/orders/ord_original123",
+      "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
     "order": {
-      "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+      "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
       "type": "application/json"
     }
   }
@@ -633,7 +645,7 @@ This endpoint allows you to retrieve a paginated list of chargebacks for a speci
 <code-group>
 
 ```bash [cURL]
-curl -G https://api.vatly.com/v1/orders/ord_original123/chargebacks \
+curl -G https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/chargebacks \
   -H "Authorization: Bearer live_your_api_key_here" \
   -d limit=10
 ```
@@ -642,54 +654,54 @@ curl -G https://api.vatly.com/v1/orders/ord_original123/chargebacks \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$chargebacks = $vatly->orders->chargebacks('ord_original123')->page();
+$chargebacks = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->page();
 ```
 
 ```json [Response]
 {
   "data": [
     {
-      "id": "chargeback_abc123def456",
+      "id": "chargeback_Fp2kQrSvWm8NjLhYbUcP",
       "resource": "chargeback",
-      "merchantId": "mer_abc123",
+      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
       "testmode": false,
       "amount": {
-        "value": "99.99",
+        "value": "35.09",
         "currency": "EUR"
       },
       "settlementAmount": {
-        "value": "114.99",
+        "value": "35.09",
         "currency": "EUR"
       },
-      "reason": "fraud",
-      "originalOrderId": "ord_original123",
-      "orderId": "ord_chargeback123",
-      "createdAt": "2024-01-15T10:30:00Z",
+      "reason": "product_not_received",
+      "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
+      "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",
+      "createdAt": "2024-01-25T16:45:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
+          "href": "https://api.vatly.com/v1/chargebacks/chargeback_Fp2kQrSvWm8NjLhYbUcP",
           "type": "application/json"
         },
         "originalOrder": {
-          "href": "https://api.vatly.com/v1/orders/ord_original123",
+          "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
           "type": "application/json"
         },
         "order": {
-          "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+          "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
           "type": "application/json"
         }
       }
     }
   ],
+  "count": 1,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/orders/ord_original123/chargebacks?limit=10",
+      "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/chargebacks",
       "type": "application/json"
     },
     "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -764,7 +776,7 @@ This endpoint allows you to retrieve a specific chargeback within an order conte
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/orders/ord_original123/chargebacks/chargeback_abc123def456 \
+curl https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -772,38 +784,38 @@ curl https://api.vatly.com/v1/orders/ord_original123/chargebacks/chargeback_abc1
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$chargeback = $vatly->orders->chargebacks('ord_original123')->get('chargeback_abc123def456');
+$chargeback = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->get('chargeback_Mn6xBtPvKw2RjTgYcZaE');
 ```
 
 ```json [Response]
 {
-  "id": "chargeback_abc123def456",
+  "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "chargeback",
-  "merchantId": "mer_abc123",
+  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "testmode": false,
   "amount": {
-    "value": "99.99",
+    "value": "35.09",
     "currency": "EUR"
   },
   "settlementAmount": {
-    "value": "114.99",
+    "value": "35.09",
     "currency": "EUR"
   },
   "reason": "fraud",
-  "originalOrderId": "ord_original123",
-  "orderId": "ord_chargeback123",
-  "createdAt": "2024-01-15T10:30:00Z",
+  "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
+  "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",
+  "createdAt": "2024-01-25T16:45:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
+      "href": "https://api.vatly.com/v1/chargebacks/chargeback_Mn6xBtPvKw2RjTgYcZaE",
       "type": "application/json"
     },
     "originalOrder": {
-      "href": "https://api.vatly.com/v1/orders/ord_original123",
+      "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
     "order": {
-      "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+      "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
       "type": "application/json"
     }
   }

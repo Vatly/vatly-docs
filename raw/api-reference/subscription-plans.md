@@ -40,8 +40,8 @@ The subscription plan model contains all the information about the subscription 
     </td>
     
     <td>
-      Unique identifier for the subscription plan (starts with <code>
-        plan_
+      Unique identifier for the subscription plan (always starts with <code>
+        subscription_plan_
       </code>
       
       ).
@@ -225,18 +225,18 @@ The subscription plan model contains all the information about the subscription 
     
     <td>
       Current status of the plan. Can be <code>
-        approved
+        active
       </code>
       
-       (active and can be subscribed to), <code>
-        draft
+       (plan is active and can be subscribed to), <code>
+        pending
       </code>
       
-       (not yet available), or <code>
-        archived
+       (plan is awaiting approval), or <code>
+        rejected
       </code>
       
-       (has been archived).
+       (plan has been rejected).
     </td>
   </tr>
   
@@ -288,7 +288,7 @@ The subscription plan model contains all the information about the subscription 
 
 `GET /v1/subscription-plans`
 
-This endpoint retrieves a paginated list of all subscription plans.
+This endpoint retrieves a paginated list of all subscription plans. Only plans with `active` status can be used in checkouts.
 
 ### Optional query parameters
 
@@ -385,57 +385,57 @@ $plans = $vatly->subscriptionPlans->page();
 {
   "data": [
     {
-      "id": "plan_abc123def456",
+      "id": "subscription_plan_Bm7xNvPwKr3YjTgHcZaE",
       "resource": "subscription_plan",
       "testmode": false,
       "name": "Pro Monthly",
       "description": "Full access to all Pro features, billed monthly",
       "basePrice": {
-        "value": "29.99",
+        "value": "29.00",
         "currency": "EUR"
       },
       "interval": "month",
       "intervalCount": 1,
-      "status": "approved",
+      "status": "active",
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/subscription-plans/plan_abc123def456",
+          "href": "https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7xNvPwKr3YjTgHcZaE",
           "type": "application/json"
         }
       }
     },
     {
-      "id": "plan_yearly789xyz",
+      "id": "subscription_plan_Wt5mNvBxKw7YcZaEjLhR",
       "resource": "subscription_plan",
       "testmode": false,
       "name": "Pro Yearly",
       "description": "Full access to all Pro features, billed yearly",
       "basePrice": {
-        "value": "299.99",
+        "value": "290.00",
         "currency": "EUR"
       },
       "interval": "year",
       "intervalCount": 1,
-      "status": "approved",
+      "status": "active",
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/subscription-plans/plan_yearly789xyz",
+          "href": "https://api.vatly.com/v1/subscription-plans/subscription_plan_Wt5mNvBxKw7YcZaEjLhR",
           "type": "application/json"
         }
       }
     }
   ],
+  "count": 2,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/subscription-plans?limit=10",
+      "href": "https://api.vatly.com/v1/subscription-plans",
       "type": "application/json"
     },
     "next": null,
     "prev": null
-  },
-  "count": 2
+  }
 }
 ```
 
@@ -492,7 +492,7 @@ This endpoint retrieves a specific subscription plan by its ID.
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/subscription-plans/plan_abc123def456 \
+curl https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7xNvPwKr3YjTgHcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -500,27 +500,27 @@ curl https://api.vatly.com/v1/subscription-plans/plan_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$plan = $vatly->subscriptionPlans->get('plan_abc123def456');
+$plan = $vatly->subscriptionPlans->get('subscription_plan_Bm7xNvPwKr3YjTgHcZaE');
 ```
 
 ```json [Response]
 {
-  "id": "plan_abc123def456",
+  "id": "subscription_plan_Bm7xNvPwKr3YjTgHcZaE",
   "resource": "subscription_plan",
   "testmode": false,
   "name": "Pro Monthly",
   "description": "Full access to all Pro features, billed monthly",
   "basePrice": {
-    "value": "29.99",
+    "value": "29.00",
     "currency": "EUR"
   },
   "interval": "month",
   "intervalCount": 1,
-  "status": "approved",
+  "status": "active",
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/subscription-plans/plan_abc123def456",
+      "href": "https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7xNvPwKr3YjTgHcZaE",
       "type": "application/json"
     }
   }

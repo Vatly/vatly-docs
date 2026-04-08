@@ -87,7 +87,7 @@ $vatly->setApiKey('live_your_api_key_here');
 // Create a checkout
 $checkout = $vatly->checkouts->create([
     'products' => [
-        ['id' => 'plan_abc123', 'quantity' => 1]
+        ['id' => 'subscription_plan_Bm7xNvPwKr3YjTgHcZaE', 'quantity' => 1]
     ],
     'redirectUrlSuccess' => 'https://yourapp.com/success',
     'redirectUrlCanceled' => 'https://yourapp.com/canceled',

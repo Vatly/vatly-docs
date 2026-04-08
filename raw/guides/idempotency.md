@@ -20,7 +20,7 @@ curl -X POST https://api.vatly.com/v1/checkouts \
   -H "Idempotency-Key: 123e4567-e89b-12d3-a456-426614174000" \
   -H "Content-Type: application/json" \
   -d '{
-    "products": [{"id": "plan_abc123"}],
+    "products": [{"id": "subscription_plan_Bm7xNvPwKr3YjTgHcZaE"}],
     "redirectUrlSuccess": "https://example.com/success",
     "redirectUrlCanceled": "https://example.com/canceled"
   }'
@@ -32,7 +32,7 @@ $vatly->setApiKey('live_your_api_key_here');
 
 $checkout = $vatly->checkouts->create([
     'products' => [
-        ['id' => 'plan_abc123'],
+        ['id' => 'subscription_plan_Bm7xNvPwKr3YjTgHcZaE'],
     ],
     'redirectUrlSuccess' => 'https://example.com/success',
     'redirectUrlCanceled' => 'https://example.com/canceled',

@@ -41,7 +41,7 @@ The refund model contains all the information about order refunds, including the
     
     <td>
       Unique identifier for the refund (starts with <code>
-        ref_
+        refund_
       </code>
       
       ).
@@ -161,7 +161,15 @@ The refund model contains all the information about order refunds, including the
       </code>
       
       , <code>
-        completed
+        queued
+      </code>
+      
+      , <code>
+        processing
+      </code>
+      
+      , <code>
+        refunded
       </code>
       
       , <code>
@@ -247,12 +255,32 @@ The refund model contains all the information about order refunds, including the
     
     <td>
       <code>
-        Money
+        array
       </code>
     </td>
     
     <td>
-      Total tax amount being refunded.
+      Tax breakdown by rate being refunded. Array of objects with <code>
+        taxRate
+      </code>
+      
+       (<code>
+        name
+      </code>
+      
+      , <code>
+        percentage
+      </code>
+      
+      , <code>
+        taxablePercentage
+      </code>
+      
+      ) and <code>
+        amount
+      </code>
+      
+       (Money).
     </td>
   </tr>
   
@@ -324,6 +352,96 @@ The refund model contains all the information about order refunds, including the
 </tbody>
 </table>
 
+#### Status values
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Status
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        pending
+      </code>
+    </td>
+    
+    <td>
+      Refund is ready to be sent to the bank.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        queued
+      </code>
+    </td>
+    
+    <td>
+      Refund is queued due to a lack of balance.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        processing
+      </code>
+    </td>
+    
+    <td>
+      Refund is being processed (cancellation no longer possible).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        refunded
+      </code>
+    </td>
+    
+    <td>
+      Refund has been processed successfully.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        failed
+      </code>
+    </td>
+    
+    <td>
+      Refund has failed after processing.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        canceled
+      </code>
+    </td>
+    
+    <td>
+      Refund was canceled.
+    </td>
+  </tr>
+</tbody>
+</table>
+
 ### RefundLine Properties
 
 <table>
@@ -359,7 +477,7 @@ The refund model contains all the information about order refunds, including the
     
     <td>
       Unique identifier for this refund line (starts with <code>
-        rli_
+        refund_item_
       </code>
       
       ).
@@ -487,12 +605,20 @@ The refund model contains all the information about order refunds, including the
     
     <td>
       <code>
-        Money
+        array
       </code>
     </td>
     
     <td>
-      Tax amount being refunded.
+      Tax breakdown by rate being refunded. Array of objects with <code>
+        taxRate
+      </code>
+      
+       and <code>
+        amount
+      </code>
+      
+      .
     </td>
   </tr>
 </tbody>
@@ -627,18 +753,18 @@ This endpoint allows you to create a partial refund for a specific order. You sp
 <code-group>
 
 ```bash [cURL]
-curl -X POST https://api.vatly.com/v1/orders/ord_abc123/refunds \
+curl -X POST https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds \
   -H "Authorization: Bearer live_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
     "items": [
       {
-        "itemId": "oli_abc123",
+        "itemId": "order_item_Jk4pQrSvWm8NjLhYbUcP",
         "amount": {
           "value": "15.00",
           "currency": "EUR"
         },
-        "description": "Partial refund for service issue"
+        "description": "50% refund for service issue"
       }
     ]
   }'
@@ -648,15 +774,15 @@ curl -X POST https://api.vatly.com/v1/orders/ord_abc123/refunds \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$refund = $vatly->orders->refunds('ord_abc123')->create([
+$refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->create([
     'items' => [
         [
-            'itemId' => 'oli_abc123',
+            'itemId' => 'order_item_Jk4pQrSvWm8NjLhYbUcP',
             'amount' => [
                 'value' => '15.00',
                 'currency' => 'EUR',
             ],
-            'description' => 'Partial refund for service issue',
+            'description' => '50% refund for service issue',
         ],
     ],
 ]);
@@ -664,14 +790,14 @@ $refund = $vatly->orders->refunds('ord_abc123')->create([
 
 ```json [Response]
 {
-  "id": "ref_abc123def456",
+  "id": "refund_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "refund",
   "orderId": null,
-  "merchantId": "mer_abc123",
-  "customerId": "cus_xyz789",
+  "merchantId": "merchant_Fp2kQrSvWm8NjLhYbUcP",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
   "status": "pending",
-  "originalOrderId": "ord_abc123",
+  "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
   "total": {
     "value": "18.15",
     "currency": "EUR"
@@ -680,15 +806,24 @@ $refund = $vatly->orders->refunds('ord_abc123')->create([
     "value": "15.00",
     "currency": "EUR"
   },
-  "taxSummary": {
-    "value": "3.15",
-    "currency": "EUR"
-  },
+  "taxSummary": [
+    {
+      "taxRate": {
+        "name": "VAT",
+        "percentage": 21,
+        "taxablePercentage": 100
+      },
+      "amount": {
+        "value": "3.15",
+        "currency": "EUR"
+      }
+    }
+  ],
   "lines": [
     {
-      "id": "rli_abc123",
+      "id": "refund_item_Tk7mNvBxKw2RjTgYcZaE",
       "resource": "refundline",
-      "description": "Partial refund for service issue",
+      "description": "50% refund for service issue",
       "quantity": 1,
       "basePrice": {
         "value": "15.00",
@@ -702,20 +837,29 @@ $refund = $vatly->orders->refunds('ord_abc123')->create([
         "value": "15.00",
         "currency": "EUR"
       },
-      "taxes": {
-        "value": "3.15",
-        "currency": "EUR"
-      }
+      "taxes": [
+        {
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
+          },
+          "amount": {
+            "value": "3.15",
+            "currency": "EUR"
+          }
+        }
+      ]
     }
   ],
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/refunds/ref_abc123def456",
+      "href": "https://api.vatly.com/v1/refunds/refund_Mn6xBtPvKw2RjTgYcZaE",
       "type": "application/json"
     },
     "originalOrder": {
-      "href": "https://api.vatly.com/v1/orders/ord_abc123",
+      "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
     "order": null
@@ -816,7 +960,7 @@ This endpoint allows you to create a full refund for a specific order. This will
 <code-group>
 
 ```bash [cURL]
-curl -X POST https://api.vatly.com/v1/orders/ord_abc123/refunds/full \
+curl -X POST https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds/full \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -824,63 +968,81 @@ curl -X POST https://api.vatly.com/v1/orders/ord_abc123/refunds/full \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$refund = $vatly->orders->refunds('ord_abc123')->full();
+$refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->full();
 ```
 
 ```json [Response]
 {
-  "id": "ref_xyz789abc123",
+  "id": "refund_Rk5pQrSvWm8NjLhYbUcP",
   "resource": "refund",
   "orderId": null,
-  "merchantId": "mer_abc123",
-  "customerId": "cus_xyz789",
+  "merchantId": "merchant_Bm7xNvPwKr3YjTgHcZaE",
+  "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
   "testmode": false,
   "status": "pending",
-  "originalOrderId": "ord_abc123",
+  "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
   "total": {
-    "value": "120.99",
+    "value": "35.09",
     "currency": "EUR"
   },
   "subtotal": {
-    "value": "100.00",
+    "value": "29.00",
     "currency": "EUR"
   },
-  "taxSummary": {
-    "value": "20.99",
-    "currency": "EUR"
-  },
-  "lines": [
+  "taxSummary": [
     {
-      "id": "rli_full123",
-      "resource": "refundline",
-      "description": "Pro Monthly Subscription (Full Refund)",
-      "quantity": 1,
-      "basePrice": {
-        "value": "100.00",
-        "currency": "EUR"
+      "taxRate": {
+        "name": "VAT",
+        "percentage": 21,
+        "taxablePercentage": 100
       },
-      "total": {
-        "value": "120.99",
-        "currency": "EUR"
-      },
-      "subtotal": {
-        "value": "100.00",
-        "currency": "EUR"
-      },
-      "taxes": {
-        "value": "20.99",
+      "amount": {
+        "value": "6.09",
         "currency": "EUR"
       }
     }
   ],
-  "createdAt": "2024-01-15T10:30:00Z",
+  "lines": [
+    {
+      "id": "refund_item_Bm7xNvPwKr3YjTgHcZaE",
+      "resource": "refundline",
+      "description": "Pro Monthly Subscription (Full Refund)",
+      "quantity": 1,
+      "basePrice": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
+      "total": {
+        "value": "35.09",
+        "currency": "EUR"
+      },
+      "subtotal": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
+      "taxes": [
+        {
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
+          },
+          "amount": {
+            "value": "6.09",
+            "currency": "EUR"
+          }
+        }
+      ]
+    }
+  ],
+  "createdAt": "2024-01-21T09:00:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/refunds/ref_xyz789abc123",
+      "href": "https://api.vatly.com/v1/refunds/refund_Rk5pQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
     "originalOrder": {
-      "href": "https://api.vatly.com/v1/orders/ord_abc123",
+      "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
     "order": null
@@ -995,7 +1157,7 @@ This endpoint allows you to retrieve a list of all refunds for a specific order.
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/orders/ord_abc123/refunds \
+curl https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -1003,83 +1165,98 @@ curl https://api.vatly.com/v1/orders/ord_abc123/refunds \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$refunds = $vatly->orders->refunds('ord_abc123')->page();
+$refunds = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->page();
 ```
 
 ```json [Response]
 {
   "data": [
     {
-      "id": "ref_abc123def456",
+      "id": "refund_Bm7xNvPwKr3YjTgHcZaE",
       "resource": "refund",
-      "orderId": "ord_credit123",
-      "merchantId": "mer_abc123",
-      "customerId": "cus_xyz789",
+      "orderId": null,
+      "merchantId": "merchant_Bm7xNvPwKr3YjTgHcZaE",
+      "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
       "testmode": false,
-      "status": "completed",
-      "originalOrderId": "ord_abc123",
+      "status": "pending",
+      "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
       "total": {
-        "value": "18.15",
+        "value": "12.10",
         "currency": "EUR"
       },
       "subtotal": {
-        "value": "15.00",
+        "value": "10.00",
         "currency": "EUR"
       },
-      "taxSummary": {
-        "value": "3.15",
-        "currency": "EUR"
-      },
-      "lines": [
+      "taxSummary": [
         {
-          "id": "rli_abc123",
-          "resource": "refundline",
-          "description": "Partial refund for service issue",
-          "quantity": 1,
-          "basePrice": {
-            "value": "15.00",
-            "currency": "EUR"
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
           },
-          "total": {
-            "value": "18.15",
-            "currency": "EUR"
-          },
-          "subtotal": {
-            "value": "15.00",
-            "currency": "EUR"
-          },
-          "taxes": {
-            "value": "3.15",
+          "amount": {
+            "value": "2.10",
             "currency": "EUR"
           }
         }
       ],
-      "createdAt": "2024-01-15T10:30:00Z",
+      "lines": [
+        {
+          "id": "refund_item_Jk4pQrSvWm8NjLhYbUcP",
+          "resource": "refundline",
+          "description": "Partial refund for service issue",
+          "quantity": 1,
+          "basePrice": {
+            "value": "10.00",
+            "currency": "EUR"
+          },
+          "total": {
+            "value": "12.10",
+            "currency": "EUR"
+          },
+          "subtotal": {
+            "value": "10.00",
+            "currency": "EUR"
+          },
+          "taxes": [
+            {
+              "taxRate": {
+                "name": "VAT",
+                "percentage": 21,
+                "taxablePercentage": 100
+              },
+              "amount": {
+                "value": "2.10",
+                "currency": "EUR"
+              }
+            }
+          ]
+        }
+      ],
+      "createdAt": "2024-01-20T14:00:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/refunds/ref_abc123def456",
+          "href": "https://api.vatly.com/v1/refunds/refund_Bm7xNvPwKr3YjTgHcZaE",
           "type": "application/json"
         },
         "originalOrder": {
-          "href": "https://api.vatly.com/v1/orders/ord_abc123",
+          "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
           "type": "application/json"
         },
-        "order": {
-          "href": "https://api.vatly.com/v1/orders/ord_credit123",
-          "type": "application/json"
-        }
+        "order": null
       }
     }
   ],
+  "count": 1,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/orders/ord_abc123/refunds?limit=10",
+      "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds",
       "type": "application/json"
     },
     "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -1154,7 +1331,7 @@ This endpoint allows you to retrieve details of a specific refund for a specific
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/orders/ord_abc123/refunds/ref_abc123def456 \
+curl https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds/refund_Xk9pQrSvWm4NjLhYbUcP \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -1162,19 +1339,19 @@ curl https://api.vatly.com/v1/orders/ord_abc123/refunds/ref_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$refund = $vatly->orders->refunds('ord_abc123')->get('ref_abc123def456');
+$refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->get('refund_Xk9pQrSvWm4NjLhYbUcP');
 ```
 
 ```json [Response]
 {
-  "id": "ref_abc123def456",
+  "id": "refund_Xk9pQrSvWm4NjLhYbUcP",
   "resource": "refund",
-  "orderId": "ord_credit123",
-  "merchantId": "mer_abc123",
-  "customerId": "cus_xyz789",
+  "orderId": "order_Bm7xNvPwKr3YjTgHcZaE",
+  "merchantId": "merchant_Bm7xNvPwKr3YjTgHcZaE",
+  "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
   "testmode": false,
-  "status": "completed",
-  "originalOrderId": "ord_abc123",
+  "status": "refunded",
+  "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
   "total": {
     "value": "18.15",
     "currency": "EUR"
@@ -1183,15 +1360,24 @@ $refund = $vatly->orders->refunds('ord_abc123')->get('ref_abc123def456');
     "value": "15.00",
     "currency": "EUR"
   },
-  "taxSummary": {
-    "value": "3.15",
-    "currency": "EUR"
-  },
+  "taxSummary": [
+    {
+      "taxRate": {
+        "name": "VAT",
+        "percentage": 21,
+        "taxablePercentage": 100
+      },
+      "amount": {
+        "value": "3.15",
+        "currency": "EUR"
+      }
+    }
+  ],
   "lines": [
     {
-      "id": "rli_abc123",
+      "id": "refund_item_Mn6xBtPvKw2RjTgYcZaE",
       "resource": "refundline",
-      "description": "Partial refund for service issue",
+      "description": "Pro Monthly Subscription (Refund)",
       "quantity": 1,
       "basePrice": {
         "value": "15.00",
@@ -1205,24 +1391,33 @@ $refund = $vatly->orders->refunds('ord_abc123')->get('ref_abc123def456');
         "value": "15.00",
         "currency": "EUR"
       },
-      "taxes": {
-        "value": "3.15",
-        "currency": "EUR"
-      }
+      "taxes": [
+        {
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
+          },
+          "amount": {
+            "value": "3.15",
+            "currency": "EUR"
+          }
+        }
+      ]
     }
   ],
-  "createdAt": "2024-01-15T10:30:00Z",
+  "createdAt": "2024-01-20T14:00:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/refunds/ref_abc123def456",
+      "href": "https://api.vatly.com/v1/refunds/refund_Xk9pQrSvWm4NjLhYbUcP",
       "type": "application/json"
     },
     "originalOrder": {
-      "href": "https://api.vatly.com/v1/orders/ord_abc123",
+      "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
     "order": {
-      "href": "https://api.vatly.com/v1/orders/ord_credit123",
+      "href": "https://api.vatly.com/v1/orders/order_Bm7xNvPwKr3YjTgHcZaE",
       "type": "application/json"
     }
   }
@@ -1300,7 +1495,7 @@ This endpoint allows you to cancel a pending refund for a specific order. Only p
 <code-group>
 
 ```bash [cURL]
-curl -X DELETE https://api.vatly.com/v1/orders/ord_abc123/refunds/ref_abc123def456 \
+curl -X DELETE https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds/refund_Mn6xBtPvKw2RjTgYcZaE \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -1308,7 +1503,7 @@ curl -X DELETE https://api.vatly.com/v1/orders/ord_abc123/refunds/ref_abc123def4
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$vatly->orders->refunds('ord_abc123')->cancel('ref_abc123def456');
+$vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->cancel('refund_Mn6xBtPvKw2RjTgYcZaE');
 ```
 
 </code-group>

@@ -45,7 +45,7 @@ Below you'll find all properties for the Vatly One-off Product API resource.
     
     <td>
       Unique identifier for the product (starts with <code>
-        prod_
+        one_off_product_
       </code>
       
       ).
@@ -169,18 +169,18 @@ Below you'll find all properties for the Vatly One-off Product API resource.
     
     <td>
       Current status of the product. Can be <code>
-        approved
+        active
       </code>
       
-       (active and can be purchased), <code>
-        draft
+       (product is active and can be purchased), <code>
+        pending
       </code>
       
-       (not yet available), or <code>
-        archived
+       (awaiting approval), or <code>
+        rejected
       </code>
       
-       (has been archived).
+       (has been rejected).
     </td>
   </tr>
   
@@ -233,6 +233,8 @@ Below you'll find all properties for the Vatly One-off Product API resource.
 `GET /v1/one-off-products`
 
 This endpoint retrieves a paginated list of all one-off products.
+
+Only products with `active` status can be used in checkouts.
 
 ### Optional parameters
 
@@ -329,34 +331,34 @@ $products = $vatly->oneOffProducts->page();
 {
   "data": [
     {
-      "id": "prod_abc123def456",
+      "id": "one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
       "resource": "one_off_product",
       "testmode": false,
       "name": "Premium License",
       "description": "Lifetime access to all premium features",
       "basePrice": {
-        "value": "99.99",
+        "value": "299.00",
         "currency": "EUR"
       },
-      "status": "approved",
+      "status": "active",
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/one-off-products/prod_abc123def456",
+          "href": "https://api.vatly.com/v1/one-off-products/one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
           "type": "application/json"
         }
       }
     }
   ],
+  "count": 1,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/one-off-products?limit=10",
+      "href": "https://api.vatly.com/v1/one-off-products",
       "type": "application/json"
     },
     "next": null,
     "prev": null
-  },
-  "count": 1
+  }
 }
 ```
 
@@ -366,7 +368,7 @@ $products = $vatly->oneOffProducts->page();
 
 ## Get a specific one-off product
 
-`GET /v1/one-off-products/:id`
+`GET /v1/one-off-products/:oneOffProductId`
 
 This endpoint retrieves a specific one-off product by its ID.
 
@@ -393,7 +395,7 @@ This endpoint retrieves a specific one-off product by its ID.
   <tr>
     <td>
       <code>
-        id
+        oneOffProductId
       </code>
     </td>
     
@@ -413,7 +415,7 @@ This endpoint retrieves a specific one-off product by its ID.
 <code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/one-off-products/prod_abc123def456 \
+curl https://api.vatly.com/v1/one-off-products/one_off_product_Vr8kQdFhSrG4Y3DnfsdqH \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -421,25 +423,25 @@ curl https://api.vatly.com/v1/one-off-products/prod_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$product = $vatly->oneOffProducts->get('prod_abc123def456');
+$product = $vatly->oneOffProducts->get('one_off_product_Vr8kQdFhSrG4Y3DnfsdqH');
 ```
 
 ```json [Response]
 {
-  "id": "prod_abc123def456",
+  "id": "one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
   "resource": "one_off_product",
   "testmode": false,
   "name": "Premium License",
   "description": "Lifetime access to all premium features",
   "basePrice": {
-    "value": "99.99",
+    "value": "299.00",
     "currency": "EUR"
   },
-  "status": "approved",
+  "status": "active",
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/one-off-products/prod_abc123def456",
+      "href": "https://api.vatly.com/v1/one-off-products/one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
       "type": "application/json"
     }
   }

@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Customer resource.
     
     <td>
       Unique identifier for the customer (<code>
-        customer_...
+        cus_...
       </code>
       
       ).
@@ -255,7 +255,7 @@ $customer = $vatly->customers->create([
     ],
 ]);
 
-echo $customer->id;  // customer_7kBmRtPvXw2NjLhYcZaE
+echo $customer->id;  // cus_abc123
 ```
 
 ---
@@ -267,7 +267,7 @@ echo $customer->id;  // customer_7kBmRtPvXw2NjLhYcZaE
 Retrieve a customer by their ID.
 
 ```php
-$customer = $vatly->customers->get('customer_7kBmRtPvXw2NjLhYcZaE');
+$customer = $vatly->customers->get('cus_abc123');
 
 echo $customer->email;
 echo $customer->name;
@@ -349,6 +349,6 @@ foreach ($customers as $customer) {
 // Pagination
 $customers = $vatly->customers->list([
     'limit' => 25,
-    'startingAfter' => 'customer_last_id',
+    'startingAfter' => 'cus_last_id',
 ]);
 ```

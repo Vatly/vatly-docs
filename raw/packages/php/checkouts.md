@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Checkout resource.
     
     <td>
       Unique identifier for the checkout (<code>
-        checkout_...
+        chk_...
       </code>
       
       ).
@@ -388,14 +388,14 @@ Create a new hosted checkout for your customer.
 $checkout = $vatly->checkouts->create([
     'products' => [
         [
-            'id' => 'subscription_plan_Bm7xNvPwKr3YjTgHcZaE',
+            'id' => 'plan_abc123',
             'quantity' => 1,
             'trialDays' => 14,
         ]
     ],
     'redirectUrlSuccess' => 'https://yourapp.com/success',
     'redirectUrlCanceled' => 'https://yourapp.com/canceled',
-    'customerId' => 'customer_Xk9pQrSvWm4NjLhYbUcP',
+    'customerId' => 'cus_xyz789',
     'metadata' => [
         'user_id' => '12345',
     ],
@@ -407,7 +407,7 @@ $checkoutUrl = $checkout->getCheckoutUrl();
 
 ```json
 {
-  "id": "checkout_Wt4nKpRvBx9MjLhYcZaE",
+  "id": "chk_abc123",
   "status": "created",
   "merchantId": "merchant_xyz",
   "orderId": null,
@@ -417,7 +417,7 @@ $checkoutUrl = $checkout->getCheckoutUrl();
   "metadata": {"user_id": "12345"},
   "createdAt": "2024-12-14T13:32:24.000Z",
   "_links": {
-    "checkoutUrl": "https://checkout.vatly.com/checkout_Wt4nKpRvBx9MjLhYcZaE"
+    "checkoutUrl": "https://pay.vatly.com/chk_abc123"
   }
 }
 ```
@@ -431,7 +431,7 @@ $checkoutUrl = $checkout->getCheckoutUrl();
 Retrieve a checkout by its ID.
 
 ```php
-$checkout = $vatly->checkouts->get('checkout_Wt4nKpRvBx9MjLhYcZaE');
+$checkout = $vatly->checkouts->get('chk_abc123');
 
 echo $checkout->id;
 echo $checkout->status;
@@ -519,7 +519,7 @@ foreach ($checkouts as $checkout) {
 // Pagination
 $checkouts = $vatly->checkouts->list([
     'limit' => 25,
-    'startingAfter' => 'checkout_last_id',
+    'startingAfter' => 'chk_last_id',
 ]);
 ```
 

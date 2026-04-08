@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Chargeback resource.
     
     <td>
       Unique identifier for the chargeback (<code>
-        chb_...
+        chargeback_...
       </code>
       
       ).
@@ -251,7 +251,7 @@ Below you'll find all properties for the Vatly Chargeback resource.
 Retrieve a chargeback by its ID.
 
 ```php
-$chargeback = $vatly->chargebacks->get('chb_abc123');
+$chargeback = $vatly->chargebacks->get('chargeback_abc123');
 
 echo $chargeback->reason;
 echo $chargeback->amount->value . ' ' . $chargeback->amount->currency;

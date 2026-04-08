@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Subscription resource.
     
     <td>
       Unique identifier for the subscription (<code>
-        subscription_...
+        sub_...
       </code>
       
       ).
@@ -289,7 +289,7 @@ Below you'll find all properties for the Vatly Subscription resource.
 Retrieve a subscription by its ID.
 
 ```php
-$subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
+$subscription = $vatly->subscriptions->get('sub_abc123');
 
 echo $subscription->status;
 echo $subscription->planId;
@@ -392,7 +392,7 @@ foreach ($subscriptions as $subscription) {
 
 // Filter by customer
 $subscriptions = $vatly->subscriptions->list([
-    'customerId' => 'customer_Lp3mNvBxKw7RjTgYcZaE',
+    'customerId' => 'cus_abc123',
 ]);
 ```
 
@@ -405,7 +405,7 @@ $subscriptions = $vatly->subscriptions->list([
 Cancel a subscription. The subscription will remain active until the end of the current billing period.
 
 ```php
-$subscription = $vatly->subscriptions->cancel('subscription_Lp3mNvBxKw7RjTgYcZaE');
+$subscription = $vatly->subscriptions->cancel('sub_abc123');
 
 // Subscription is now on grace period until current period ends
 echo $subscription->status;        // 'on_grace_period'

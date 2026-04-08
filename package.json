@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "nuxt dev --extends docus",
     "build": "nuxt build --extends docus",
-    "postinstall": "cp app/components/OgImage/OgImageDocs.vue node_modules/docus/app/components/OgImage/OgImageDocs.vue"
+    "postinstall": "cp app/components/OgImage/OgImageDocs.vue node_modules/docus/app/components/OgImage/OgImageDocs.vue",
+    "lint:md": "npx markdownlint-cli2 'content/**/*.md'"
   },
   "dependencies": {
     "@nuxtjs/sitemap": "^7.6.0",

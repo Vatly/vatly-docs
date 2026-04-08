@@ -12,6 +12,7 @@ config:
   MD032: false
   MD033: false
   MD034: false
+  MD041: false
   MD042: false
   MD060: false
 

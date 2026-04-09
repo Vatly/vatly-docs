@@ -74,5 +74,6 @@ Getting started with Vatly is easy!
 3. Connect your Mollie account.
 4. Set up your products.
 5. Integrate Vatly in your SaaS or landing page using one of our [SDKs](/guides/sdks).
+6. Follow the [selling workflow guide](/guides/selling-workflow) to connect products, checkouts, webhooks, and fulfillment.
 
 [Read the quickstart guide](/guides/quickstart)

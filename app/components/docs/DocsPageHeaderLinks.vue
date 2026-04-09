@@ -38,8 +38,15 @@ const items = [
 ]
 
 async function copyPage() {
-  const page = await $fetch<string>(`/raw${route.path}.md`)
-  copy(page)
+  const article = document.querySelector('article')
+  const page = article?.textContent?.trim()
+
+  if (page) {
+    await copy(page)
+    return
+  }
+
+  await copy(window.location.href)
 }
 </script>
 

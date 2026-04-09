@@ -106,6 +106,36 @@ $checkoutUrl = $checkout->links->checkoutUrl->href;
 
 The response includes a hosted checkout URL in `links.checkoutUrl.href`. That is the URL your customer should visit to complete payment.
 
+<code-group>
+
+```json [Response]
+{
+  "id": "checkout_QGQ0qDrQ2B4O1yXVTr6Wc",
+  "status": "open",
+  "products": [
+    {
+      "id": "one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
+      "quantity": 1
+    }
+  ],
+  "redirectUrlSuccess": "https://example.com/success",
+  "redirectUrlCanceled": "https://example.com/canceled",
+  "links": {
+    "checkoutUrl": {
+      "href": "https://checkout.vatly.com/chk_test_123456789"
+    }
+  }
+}
+```
+
+```php [Read checkout URL]
+$checkoutUrl = $checkout->links->checkoutUrl->href;
+
+return redirect()->away($checkoutUrl);
+```
+
+</code-group>
+
 [Read the Checkouts API reference](/api-reference/checkouts)
 
 ## 5. Redirect the customer to the checkout URL

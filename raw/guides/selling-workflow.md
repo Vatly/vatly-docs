@@ -100,13 +100,13 @@ $checkout = $vatly->checkouts->create([
 ]);
 
 $checkoutUrl = $checkout->links->checkoutUrl->href;
+
+return redirect()->away($checkoutUrl);
 ```
 
 </code-group>
 
 The response includes a hosted checkout URL in `links.checkoutUrl.href`. That is the URL your customer should visit to complete payment.
-
-<code-group>
 
 ```json [Response]
 {
@@ -127,14 +127,6 @@ The response includes a hosted checkout URL in `links.checkoutUrl.href`. That is
   }
 }
 ```
-
-```php [Read checkout URL]
-$checkoutUrl = $checkout->links->checkoutUrl->href;
-
-return redirect()->away($checkoutUrl);
-```
-
-</code-group>
 
 [Read the Checkouts API reference](/api-reference/checkouts)
 

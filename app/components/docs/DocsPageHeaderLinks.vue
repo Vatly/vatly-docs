@@ -8,7 +8,10 @@ const appBaseURL = useRuntimeConfig().app?.baseURL || '/'
 const { copy, copied } = useClipboard()
 const { t } = useDocusI18n()
 
-const markdownLink = computed(() => `${window?.location?.origin}${appBaseURL}raw${route.path}.md`)
+const markdownLink = computed(() => {
+  const origin = import.meta.client ? window.location.origin : ''
+  return `${origin}${appBaseURL}raw${route.path}.md`
+})
 const items = [
   [{
     label: t('docs.copy.link'),
@@ -38,6 +41,10 @@ const items = [
 ]
 
 async function copyPage() {
+  if (!import.meta.client) {
+    return
+  }
+
   const article = document.querySelector('article')
   const page = article?.textContent?.trim()
 

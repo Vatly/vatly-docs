@@ -75,28 +75,6 @@ Chargebacks are created automatically when a payment provider initiates a disput
   <tr>
     <td>
       <code>
-        merchantId
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      ID of the merchant (starts with <code>
-        merchant_
-      </code>
-      
-      ).
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
         testmode
       </code>
     </td>
@@ -397,7 +375,6 @@ $chargebacks = $vatly->chargebacks->page();
     {
       "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
       "resource": "chargeback",
-      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
       "testmode": false,
       "amount": {
         "value": "35.09",
@@ -507,7 +484,6 @@ $chargeback = $vatly->chargebacks->get('chargeback_Mn6xBtPvKw2RjTgYcZaE');
 {
   "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "chargeback",
-  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "testmode": false,
   "amount": {
     "value": "35.09",
@@ -663,7 +639,6 @@ $chargebacks = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->page()
     {
       "id": "chargeback_Fp2kQrSvWm8NjLhYbUcP",
       "resource": "chargeback",
-      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
       "testmode": false,
       "amount": {
         "value": "35.09",
@@ -791,7 +766,6 @@ $chargeback = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->get('ch
 {
   "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "chargeback",
-  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "testmode": false,
   "amount": {
     "value": "35.09",

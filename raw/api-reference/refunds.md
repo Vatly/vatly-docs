@@ -91,24 +91,6 @@ The refund model contains all the information about order refunds, including the
   <tr>
     <td>
       <code>
-        merchantId
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      ID of the merchant.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
         customerId
       </code>
     </td>
@@ -793,7 +775,6 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->create([
   "id": "refund_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "refund",
   "orderId": null,
-  "merchantId": "merchant_Fp2kQrSvWm8NjLhYbUcP",
   "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
   "status": "pending",
@@ -976,7 +957,6 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->full();
   "id": "refund_Rk5pQrSvWm8NjLhYbUcP",
   "resource": "refund",
   "orderId": null,
-  "merchantId": "merchant_Bm7xNvPwKr3YjTgHcZaE",
   "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
   "testmode": false,
   "status": "pending",
@@ -1175,7 +1155,6 @@ $refunds = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->page();
       "id": "refund_Bm7xNvPwKr3YjTgHcZaE",
       "resource": "refund",
       "orderId": null,
-      "merchantId": "merchant_Bm7xNvPwKr3YjTgHcZaE",
       "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
       "testmode": false,
       "status": "pending",
@@ -1347,7 +1326,6 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->get('refund_Xk9
   "id": "refund_Xk9pQrSvWm4NjLhYbUcP",
   "resource": "refund",
   "orderId": "order_Bm7xNvPwKr3YjTgHcZaE",
-  "merchantId": "merchant_Bm7xNvPwKr3YjTgHcZaE",
   "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
   "testmode": false,
   "status": "refunded",

@@ -73,28 +73,6 @@ Below you'll find all properties for the Vatly Checkout API resource.
   <tr>
     <td>
       <code>
-        merchantId
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      Unique identifier for the merchant this checkout belongs to (starts with <code>
-        merchant_
-      </code>
-      
-      ).
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
         orderId
       </code>
     </td>
@@ -393,7 +371,6 @@ $checkouts = $vatly->checkouts->page();
     {
       "id": "checkout_QdEpFhdSrG4Y3DnfsdqsH",
       "resource": "checkout",
-      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
       "orderId": null,
       "testmode": false,
       "redirectUrlSuccess": "https://example.com/success",
@@ -638,7 +615,6 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
 {
   "id": "checkout_Bm7xNvPwKr3YjTgHcZaE",
   "resource": "checkout",
-  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "orderId": null,
   "testmode": false,
   "redirectUrlSuccess": "https://example.com/success",
@@ -689,7 +665,6 @@ $checkout = $vatly->checkouts->get('checkout_QdEpFhdSrG4Y3DnfsdqsH');
 {
   "id": "checkout_QdEpFhdSrG4Y3DnfsdqsH",
   "resource": "checkout",
-  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "orderId": "order_Jk4pQrSvWm8NjLhYbUcP",
   "testmode": false,
   "redirectUrlSuccess": "https://example.com/success",

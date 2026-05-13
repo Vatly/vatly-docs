@@ -73,24 +73,6 @@ The order model contains all the information about your orders, including the or
   <tr>
     <td>
       <code>
-        merchantId
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      ID of the merchant that owns this order.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
         customerId
       </code>
     </td>
@@ -335,7 +317,7 @@ The order model contains all the information about your orders, including the or
   <tr>
     <td>
       <code>
-        merchantDetails
+        customerDetails
       </code>
     </td>
     
@@ -346,7 +328,7 @@ The order model contains all the information about your orders, including the or
     </td>
     
     <td>
-      Merchant billing details (seller). Includes <code>
+      Customer billing details (buyer). Includes <code>
         fullName
       </code>
       
@@ -387,24 +369,6 @@ The order model contains all the information about your orders, including the or
       </code>
       
       .
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
-        customerDetails
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        BillingDetails
-      </code>
-    </td>
-    
-    <td>
-      Customer billing details (buyer). Same structure as merchantDetails.
     </td>
   </tr>
   
@@ -745,7 +709,6 @@ $orders = $vatly->orders->page();
     {
       "id": "order_Hn5xWqVfKm8RjTgYbUcP",
       "resource": "order",
-      "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
       "customerId": "customer_Xk9pQrSvWm4NjLhYbUcP",
       "testmode": false,
       "metadata": {},
@@ -806,18 +769,6 @@ $orders = $vatly->orders->page();
           ]
         }
       ],
-      "merchantDetails": {
-        "fullName": "Vatly B.V.",
-        "companyName": "Vatly",
-        "vatNumber": "NL123456789B01",
-        "streetAndNumber": "Keizersgracht 123",
-        "streetAdditional": null,
-        "city": "Amsterdam",
-        "region": null,
-        "postalCode": "1015 CJ",
-        "country": "NL",
-        "email": "billing@vatly.com"
-      },
       "customerDetails": {
         "fullName": "John Doe",
         "companyName": "Acme Corp",
@@ -923,7 +874,6 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
 {
   "id": "order_Hn5xWqVfKm8RjTgYbUcP",
   "resource": "order",
-  "merchantId": "merchant_Tk7mNvBxKw2RjTgYcZaE",
   "customerId": "customer_Xk9pQrSvWm4NjLhYbUcP",
   "testmode": false,
   "metadata": {},
@@ -984,18 +934,6 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
       ]
     }
   ],
-  "merchantDetails": {
-    "fullName": "Vatly B.V.",
-    "companyName": "Vatly",
-    "vatNumber": "NL123456789B01",
-    "streetAndNumber": "Keizersgracht 123",
-    "streetAdditional": null,
-    "city": "Amsterdam",
-    "region": null,
-    "postalCode": "1015 CJ",
-    "country": "NL",
-    "email": "billing@vatly.com"
-  },
   "customerDetails": {
     "fullName": "John Doe",
     "companyName": "Acme Corp",

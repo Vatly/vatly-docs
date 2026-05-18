@@ -195,7 +195,7 @@ The SDK provides access to all Vatly API resources.
 <tbody>
   <tr>
     <td>
-      <a href="/packages/php/checkouts">
+      <a href="/docs/Checkouts.md">
         Checkouts
       </a>
     </td>
@@ -207,7 +207,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/customers">
+      <a href="/docs/Customers.md">
         Customers
       </a>
     </td>
@@ -219,7 +219,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/subscriptions">
+      <a href="/docs/Subscriptions.md">
         Subscriptions
       </a>
     </td>
@@ -231,7 +231,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/subscriptionplans">
+      <a href="/docs/SubscriptionPlans.md">
         Subscription Plans
       </a>
     </td>
@@ -243,7 +243,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/oneoffproducts">
+      <a href="/docs/OneOffProducts.md">
         One-Off Products
       </a>
     </td>
@@ -255,7 +255,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/orders">
+      <a href="/docs/Orders.md">
         Orders
       </a>
     </td>
@@ -267,7 +267,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/refunds">
+      <a href="/docs/Refunds.md">
         Refunds
       </a>
     </td>
@@ -279,7 +279,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/chargebacks">
+      <a href="/docs/Chargebacks.md">
         Chargebacks
       </a>
     </td>
@@ -291,7 +291,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/packages/php/webhooks">
+      <a href="/docs/Webhooks.md">
         Webhooks
       </a>
     </td>
@@ -364,6 +364,6 @@ try {
 
 ## Requirements
 
-- PHP 8.1+
+- PHP 8.0+
 - cURL extension
 - JSON extension

@@ -195,7 +195,7 @@ The SDK provides access to all Vatly API resources.
 <tbody>
   <tr>
     <td>
-      <a href="/docs/Checkouts.md">
+      <a href="/packages/php/checkouts">
         Checkouts
       </a>
     </td>
@@ -207,7 +207,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/Customers.md">
+      <a href="/packages/php/customers">
         Customers
       </a>
     </td>
@@ -219,7 +219,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/Subscriptions.md">
+      <a href="/packages/php/subscriptions">
         Subscriptions
       </a>
     </td>
@@ -231,7 +231,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/SubscriptionPlans.md">
+      <a href="/packages/php/subscriptionplans">
         Subscription Plans
       </a>
     </td>
@@ -243,7 +243,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/OneOffProducts.md">
+      <a href="/packages/php/oneoffproducts">
         One-Off Products
       </a>
     </td>
@@ -255,7 +255,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/Orders.md">
+      <a href="/packages/php/orders">
         Orders
       </a>
     </td>
@@ -267,7 +267,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/Refunds.md">
+      <a href="/packages/php/refunds">
         Refunds
       </a>
     </td>
@@ -279,7 +279,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/Chargebacks.md">
+      <a href="/packages/php/chargebacks">
         Chargebacks
       </a>
     </td>
@@ -291,7 +291,7 @@ The SDK provides access to all Vatly API resources.
   
   <tr>
     <td>
-      <a href="/docs/Webhooks.md">
+      <a href="/packages/php/webhooks">
         Webhooks
       </a>
     </td>

@@ -1,10 +1,10 @@
-# Webhook Events
+# Webhook events
 
-> Inspect individual webhook events and retrieve the full payload that was delivered by Vatly.
+> Inspect webhook events and retrieve the full payload that Vatly delivered.
 
-## The webhook event model
+## The Webhook event API resource
 
-Webhook events let you inspect the exact payload Vatly generated for a domain event.
+A webhook event represents a single event delivery that Vatly generated. You can retrieve it later to inspect the exact payload that was sent.
 
 ### Properties
 
@@ -40,11 +40,7 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      Unique identifier for the webhook event (starts with <code>
-        webhook_event_
-      </code>
-      
-      ).
+      Unique identifier for the webhook event.
     </td>
   </tr>
   
@@ -84,12 +80,12 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      The event name, such as <code>
+      Event name that triggered the webhook, such as <code>
         order.paid
       </code>
       
        or <code>
-        refund.completed
+        subscription.updated
       </code>
       
       .
@@ -110,24 +106,16 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      The resource type the event refers to, such as <code>
+      Resource type the event relates to, such as <code>
         order
       </code>
       
       , <code>
-        refund
-      </code>
-      
-      , <code>
-        chargeback
-      </code>
-      
-      , <code>
-        subscription
+        checkout
       </code>
       
       , or <code>
-        checkout
+        subscription
       </code>
       
       .
@@ -148,7 +136,7 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      The ID of the related resource.
+      ID of the resource this event relates to.
     </td>
   </tr>
   
@@ -166,7 +154,7 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      The full resource payload as it existed when the event occurred.
+      Full resource payload as it existed when the event was created.
     </td>
   </tr>
   
@@ -184,11 +172,11 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      HATEOAS links. Contains <code>
+      HATEOAS links to related resources. Contains at least a <code>
         self
       </code>
       
-      .
+       link.
     </td>
   </tr>
 </tbody>
@@ -198,25 +186,102 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
 
 ## Get a webhook event
 
-`GET /v1/webhook-events/:eventId`
+`GET /v1/webhook-events/{eventId}`
 
-This endpoint returns the full webhook event payload for a specific event ID.
+Retrieve the full webhook event payload for a specific event ID.
 
-### Parameters
+<code-group>
+
+```bash [cURL]
+curl https://api.vatly.com/v1/webhook-events/evt_abc123def456 \
+  -H "Authorization: Bearer live_your_api_key_here"
+```
+
+```php [PHP]
+$vatly = new \Vatly\API\VatlyApiClient();
+$vatly->setApiKey('live_your_api_key_here');
+
+$event = $vatly->webhookEvents->get('evt_abc123def456');
+```
+
+```json [Response]
+{
+  "id": "evt_abc123def456",
+  "resource": "webhook_event",
+  "eventName": "subscription.updated",
+  "entityType": "subscription",
+  "entityId": "sub_abc123def456",
+  "object": {
+    "id": "sub_abc123def456",
+    "resource": "subscription",
+    "customerId": "cus_xyz789",
+    "subscriptionPlanId": "subscription_plan_premium",
+    "testmode": false,
+    "name": "Premium Plan",
+    "description": "Access to all premium features",
+    "billingAddress": {
+      "fullName": "John Doe",
+      "companyName": null,
+      "vatNumber": null,
+      "streetAndNumber": "123 Main St",
+      "streetAdditional": null,
+      "city": "Amsterdam",
+      "region": null,
+      "postalCode": "1011AB",
+      "country": "NL"
+    },
+    "basePrice": {
+      "value": "99.99",
+      "currency": "EUR"
+    },
+    "quantity": 1,
+    "interval": "month",
+    "intervalCount": 1,
+    "status": "active",
+    "startedAt": "2026-01-15T10:30:00Z",
+    "endedAt": null,
+    "cancelledAt": null,
+    "renewedAt": "2026-02-15T10:30:00Z",
+    "renewedUntil": "2026-03-15T10:30:00Z",
+    "nextRenewalAt": "2026-03-15T10:30:00Z",
+    "trialUntil": null,
+    "links": {
+      "self": {
+        "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+        "type": "application/json"
+      },
+      "customer": {
+        "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+        "type": "application/json"
+      }
+    }
+  },
+  "links": {
+    "self": {
+      "href": "https://api.vatly.com/v1/webhook-events/evt_abc123def456",
+      "type": "application/json"
+    }
+  }
+}
+```
+
+</code-group>
+
+### Response
+
+Returns the full stored webhook event, including the resource snapshot in the `object` field.
+
+### Errors
 
 <table>
 <thead>
   <tr>
     <th>
-      Name
+      Status
     </th>
     
     <th>
-      Type
-    </th>
-    
-    <th>
-      Description
+      Meaning
     </th>
   </tr>
 </thead>
@@ -225,65 +290,37 @@ This endpoint returns the full webhook event payload for a specific event ID.
   <tr>
     <td>
       <code>
-        eventId
+        401
       </code>
     </td>
     
+    <td>
+      Missing or invalid API key
+    </td>
+  </tr>
+  
+  <tr>
     <td>
       <code>
-        string
+        403
       </code>
     </td>
     
     <td>
-      The unique identifier of the webhook event.
+      You do not have access to this event
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        404
+      </code>
+    </td>
+    
+    <td>
+      The webhook event was not found
     </td>
   </tr>
 </tbody>
 </table>
-
-<code-group sync="api">
-
-```bash [cURL]
-curl https://api.vatly.com/v1/webhook-events/webhook_event_Qk8pRtSvWm2NjLhYcZaE \
-  -H "Authorization: Bearer live_your_api_key_here"
-```
-
-```php [PHP]
-$vatly = new \Vatly\API\VatlyApiClient();
-$vatly->setApiKey('live_your_api_key_here');
-
-$event = $vatly->webhookEvents->get('webhook_event_Qk8pRtSvWm2NjLhYcZaE');
-```
-
-```json [Response]
-{
-  "id": "webhook_event_Qk8pRtSvWm2NjLhYcZaE",
-  "resource": "webhook_event",
-  "eventName": "order.paid",
-  "entityType": "order",
-  "entityId": "order_Hn5xWqVfKm8RjTgYbUcP",
-  "object": {
-    "id": "order_Hn5xWqVfKm8RjTgYbUcP",
-    "resource": "order",
-    "testmode": false,
-    "status": "paid",
-    "total": {
-      "value": "29.99",
-      "currency": "EUR"
-    },
-    "subtotal": {
-      "value": "24.79",
-      "currency": "EUR"
-    }
-  },
-  "links": {
-    "self": {
-      "href": "https://api.vatly.com/v1/webhook-events/webhook_event_Qk8pRtSvWm2NjLhYcZaE",
-      "type": "application/json"
-    }
-  }
-}
-```
-
-</code-group>
